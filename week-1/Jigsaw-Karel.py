@@ -1,41 +1,49 @@
 from karel.stanfordkarel import *
 
-"""
-Karel should finish the puzzle by picking up the last beeper 
-(puzzle piece) and placing it in the right spot. Karel should 
-end in the same position Karel starts in -- the bottom left 
-corner of the world.
-"""
-def reach_spot():
-    for i in range(2):
-        move()
-def turn_around():
-    for i in range(2):
-        turn_left()
-
-def turn_right():
-    for i in range(3):
-        turn_left()
-
-def move_to_wall():
-    while front_is_clear():
-        move()
-
+# File: shelter.py
+# -----------------------------
+# The warmup program defines a "main"
+# function which should make Karel 
+# move to the beeper, pick it up, and
+# return home.
 def main():
     reach_spot()
     pick_beeper()
     move()
     turn_left()
     reach_spot()
-    turn_around()
     put_beeper()
+    turn_around()
+    return_to_origin()
+    turn_around()
+
+def reach_spot():
+    move()
+    move()
+    
+def turn_around():
+    turn_left()
+    turn_left()
+
+def return_to_origin():
     move_to_wall()
     turn_right()
     move_to_wall()
-    turn_around()
 
+    
 
+def move_to_wall():
+    while front_is_clear():
+        move()
+def turn_right():
+    turn_left()
+    turn_left()
+    turn_left()
 
-# There is no need to edit code beyond this point
+    
+    
+    
+# don't edit these next two lines
+# they tell python to run your main function
 if __name__ == '__main__':
     main()
