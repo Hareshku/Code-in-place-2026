@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Python Lists & Dictionaries Playground</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f0f; color: #e8e8e8; min-height: 100vh; padding: 2rem 1rem; }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; color: #fff; }
+  .subtitle { font-size: 14px; color: #888; margin-bottom: 1.5rem; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; }
+  .tab { padding: 8px 22px; border-radius: 8px; border: 0.5px solid #333; font-size: 14px; font-weight: 500; cursor: pointer; background: #1a1a1a; color: #888; transition: all .15s; }
+  .tab.active { background: #252525; color: #e8e8e8; border-color: #555; }
+  .tab:hover { background: #222; }
+  .panel { display: none; } .panel.active { display: block; }
+  .section-title { font-size: 11px; font-weight: 500; color: #666; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+  .vis-box { background: #1a1a1a; border-radius: 12px; border: 0.5px solid #2a2a2a; padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+  .list-display { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-height: 60px; }
+  .list-label { font-family: 'Fira Code', 'Consolas', monospace; font-size: 12px; color: #666; margin-bottom: 8px; }
+  .item { display: flex; flex-direction: column; align-items: center; background: #222; border: 0.5px solid #333; border-radius: 8px; padding: 8px 14px; transition: all .3s; }
+  .item.new { border-color: #1d9e75; background: #0d2e22; }
+  .item.highlight { border-color: #e05a2b; background: #2e1a0d; }
+  .item-val { font-family: 'Fira Code', 'Consolas', monospace; font-size: 14px; font-weight: 500; color: #e8e8e8; }
+  .item-idx { font-family: 'Fira Code', 'Consolas', monospace; font-size: 10px; color: #555; }
+  .len-display { font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; color: #1d9e75; background: #0d2e22; border-radius: 8px; padding: 4px 10px; display: inline-block; margin-top: 8px; border: 0.5px solid #1d9e7540; }
+  .ops-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+  .op-card { background: #1a1a1a; border: 0.5px solid #2a2a2a; border-radius: 12px; padding: 1rem; }
+  .op-name { font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; font-weight: 500; color: #e8e8e8; margin-bottom: 8px; }
+  .op-inputs { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .op-inputs input { flex: 1; min-width: 60px; max-width: 120px; font-family: 'Fira Code', 'Consolas', monospace; font-size: 12px; padding: 5px 8px; border-radius: 8px; border: 0.5px solid #333; background: #111; color: #e8e8e8; outline: none; }
+  .op-inputs input:focus { border-color: #555; }
+  .run-btn { padding: 5px 12px; border-radius: 8px; border: none; background: #e05a2b; color: #fff; font-size: 12px; font-weight: 500; cursor: pointer; transition: opacity .15s; white-space: nowrap; }
+  .run-btn.green { background: #1d9e75; }
+  .run-btn.red { background: #a32d2d; }
+  .run-btn:hover { opacity: .85; }
+  .output-line { font-family: 'Fira Code', 'Consolas', monospace; font-size: 12px; color: #666; margin-top: 6px; min-height: 18px; }
+  .output-line.ok { color: #1d9e75; }
+  .output-line.err { color: #d85a30; }
+  .dict-display { display: flex; flex-direction: column; gap: 6px; min-height: 60px; }
+  .dict-entry { display: flex; align-items: center; background: #222; border: 0.5px solid #333; border-radius: 8px; overflow: hidden; transition: all .3s; }
+  .dict-entry.new { border-color: #1d9e75; }
+  .dict-entry.highlight { border-color: #e05a2b; }
+  .dk { font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; font-weight: 500; padding: 6px 10px; background: #1a1a1a; color: #378add; border-right: 0.5px solid #333; min-width: 80px; }
+  .dv { font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; padding: 6px 10px; color: #e8e8e8; }
+  .reset-btn { padding: 5px 14px; border-radius: 8px; border: 0.5px solid #333; background: transparent; color: #888; font-size: 12px; cursor: pointer; }
+  .reset-btn:hover { background: #222; color: #e8e8e8; }
+  .cheatsheet { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+  .cs-row { display: flex; align-items: baseline; gap: 8px; padding: 5px 8px; border-radius: 6px; }
+  .cs-row:nth-child(odd) { background: #1e1e1e; }
+  .cs-meth { font-family: 'Fira Code', 'Consolas', monospace; font-size: 12px; color: #378add; min-width: 160px; }
+  .cs-desc { font-size: 12px; color: #888; }
+  @media (max-width: 600px) { .ops-grid { grid-template-columns: 1fr; } .cheatsheet { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<h1>🐍 Python Lists &amp; Dictionaries Playground</h1>
+<p class="subtitle">Ordered, mutable, zero-indexed. Click any operation to see it happen live!</p>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('list')">📋 Lists</button>
+  <button class="tab" onclick="switchTab('dict')">📖 Dictionaries</button>
+  <button class="tab" onclick="switchTab('ref')">📚 Quick Reference</button>
+</div>
+
+<!-- LIST PANEL -->
+<div id="panel-list" class="panel active">
+  <div class="vis-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <div class="section-title">Live list</div>
+      <button class="reset-btn" onclick="resetList()">↺ reset</button>
+    </div>
+    <div class="list-label">my_list =</div>
+    <div class="list-display" id="list-display"></div>
+    <div class="len-display" id="len-display">len(my_list) → 0</div>
+  </div>
+
+  <div class="section-title" style="margin-bottom:8px">Operations</div>
+  <div class="ops-grid">
+    <div class="op-card">
+      <div class="op-name">lst.append(x)</div>
+      <div class="op-inputs"><input id="inp-append" placeholder="value" /><button class="run-btn" onclick="doAppend()">Run</button></div>
+      <div class="output-line" id="out-append"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">lst.insert(i, x)</div>
+      <div class="op-inputs"><input id="inp-insert-i" placeholder="index" style="max-width:60px"/><input id="inp-insert-x" placeholder="value"/><button class="run-btn" onclick="doInsert()">Run</button></div>
+      <div class="output-line" id="out-insert"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">lst.remove(x)</div>
+      <div class="op-inputs"><input id="inp-remove" placeholder="value"/><button class="run-btn" onclick="doRemove()">Run</button></div>
+      <div class="output-line" id="out-remove"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">lst.pop(i)</div>
+      <div class="op-inputs"><input id="inp-pop" placeholder="index (blank=last)"/><button class="run-btn" onclick="doPop()">Run</button></div>
+      <div class="output-line" id="out-pop"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">lst[i] — access</div>
+      <div class="op-inputs"><input id="inp-access" placeholder="index"/><button class="run-btn green" onclick="doAccess()">Run</button></div>
+      <div class="output-line" id="out-access"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">lst[i] = x — update</div>
+      <div class="op-inputs"><input id="inp-upd-i" placeholder="index" style="max-width:60px"/><input id="inp-upd-x" placeholder="new value"/><button class="run-btn" onclick="doUpdate()">Run</button></div>
+      <div class="output-line" id="out-update"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">lst.sort()</div>
+      <div class="op-inputs"><button class="run-btn" onclick="doSort()">Run</button></div>
+      <div class="output-line" id="out-sort"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">lst.reverse()</div>
+      <div class="op-inputs"><button class="run-btn" onclick="doReverse()">Run</button></div>
+      <div class="output-line" id="out-reverse"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">lst.index(x)</div>
+      <div class="op-inputs"><input id="inp-index" placeholder="value"/><button class="run-btn green" onclick="doIndex()">Run</button></div>
+      <div class="output-line" id="out-index"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">lst.count(x)</div>
+      <div class="op-inputs"><input id="inp-count" placeholder="value"/><button class="run-btn green" onclick="doCount()">Run</button></div>
+      <div class="output-line" id="out-count"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">lst.extend(iterable)</div>
+      <div class="op-inputs"><input id="inp-extend" placeholder="e.g. 10,20,30"/><button class="run-btn" onclick="doExtend()">Run</button></div>
+      <div class="output-line" id="out-extend"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">lst.clear()</div>
+      <div class="op-inputs"><button class="run-btn red" onclick="doClear('list')">Run</button></div>
+      <div class="output-line" id="out-clear-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DICT PANEL -->
+<div id="panel-dict" class="panel">
+  <div class="vis-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <div class="section-title">Live dictionary</div>
+      <button class="reset-btn" onclick="resetDict()">↺ reset</button>
+    </div>
+    <div class="list-label">my_dict =</div>
+    <div class="dict-display" id="dict-display"></div>
+    <div class="len-display" id="dict-len-display">len(my_dict) → 0</div>
+  </div>
+
+  <div class="section-title" style="margin-bottom:8px">Operations</div>
+  <div class="ops-grid">
+    <div class="op-card">
+      <div class="op-name">d[key] = value — set</div>
+      <div class="op-inputs"><input id="inp-dset-k" placeholder="key" style="max-width:80px"/><input id="inp-dset-v" placeholder="value"/><button class="run-btn" onclick="doDictSet()">Run</button></div>
+      <div class="output-line" id="out-dset"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">d[key] — access</div>
+      <div class="op-inputs"><input id="inp-dget" placeholder="key"/><button class="run-btn green" onclick="doDictGet()">Run</button></div>
+      <div class="output-line" id="out-dget"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">d.get(key, default)</div>
+      <div class="op-inputs"><input id="inp-dget2-k" placeholder="key" style="max-width:80px"/><input id="inp-dget2-d" placeholder="default"/><button class="run-btn green" onclick="doDictGetDef()">Run</button></div>
+      <div class="output-line" id="out-dget2"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">del d[key]</div>
+      <div class="op-inputs"><input id="inp-ddel" placeholder="key"/><button class="run-btn" onclick="doDictDel()">Run</button></div>
+      <div class="output-line" id="out-ddel"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">d.pop(key)</div>
+      <div class="op-inputs"><input id="inp-dpop" placeholder="key"/><button class="run-btn" onclick="doDictPop()">Run</button></div>
+      <div class="output-line" id="out-dpop"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">key in d — check</div>
+      <div class="op-inputs"><input id="inp-din" placeholder="key"/><button class="run-btn green" onclick="doDictIn()">Run</button></div>
+      <div class="output-line" id="out-din"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">d.keys()</div>
+      <div class="op-inputs"><button class="run-btn green" onclick="doDictKeys()">Run</button></div>
+      <div class="output-line" id="out-dkeys"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">d.values()</div>
+      <div class="op-inputs"><button class="run-btn green" onclick="doDictVals()">Run</button></div>
+      <div class="output-line" id="out-dvals"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">d.items()</div>
+      <div class="op-inputs"><button class="run-btn green" onclick="doDictItems()">Run</button></div>
+      <div class="output-line" id="out-ditems"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">d.update(other)</div>
+      <div class="op-inputs"><input id="inp-dupd" placeholder="key:val, key:val"/><button class="run-btn" onclick="doDictUpdate()">Run</button></div>
+      <div class="output-line" id="out-dupd"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">d.setdefault(k, v)</div>
+      <div class="op-inputs"><input id="inp-dsd-k" placeholder="key" style="max-width:80px"/><input id="inp-dsd-v" placeholder="default"/><button class="run-btn" onclick="doDictSetDefault()">Run</button></div>
+      <div class="output-line" id="out-dsd"></div>
+    </div>
+    <div class="op-card">
+      <div class="op-name">d.clear()</div>
+      <div class="op-inputs"><button class="run-btn red" onclick="doClear('dict')">Run</button></div>
+      <div class="output-line" id="out-clear-dict"></div>
+    </div>
+  </div>
+</div>
+
+<!-- REFERENCE PANEL -->
+<div id="panel-ref" class="panel">
+  <div class="vis-box">
+    <div class="section-title">List methods cheatsheet</div>
+    <div class="cheatsheet">
+      <div class="cs-row"><span class="cs-meth">lst.append(x)</span><span class="cs-desc">Add x to end</span></div>
+      <div class="cs-row"><span class="cs-meth">lst.insert(i, x)</span><span class="cs-desc">Insert x at index i</span></div>
+      <div class="cs-row"><span class="cs-meth">lst.remove(x)</span><span class="cs-desc">Remove first occurrence of x</span></div>
+      <div class="cs-row"><span class="cs-meth">lst.pop(i)</span><span class="cs-desc">Remove &amp; return item at i</span></div>
+      <div class="cs-row"><span class="cs-meth">lst.extend(iter)</span><span class="cs-desc">Add all items from iterable</span></div>
+      <div class="cs-row"><span class="cs-meth">lst.sort()</span><span class="cs-desc">Sort list in-place</span></div>
+      <div class="cs-row"><span class="cs-meth">lst.reverse()</span><span class="cs-desc">Reverse list in-place</span></div>
+      <div class="cs-row"><span class="cs-meth">lst.index(x)</span><span class="cs-desc">First index of x</span></div>
+      <div class="cs-row"><span class="cs-meth">lst.count(x)</span><span class="cs-desc">Count occurrences of x</span></div>
+      <div class="cs-row"><span class="cs-meth">lst.copy()</span><span class="cs-desc">Return a shallow copy</span></div>
+      <div class="cs-row"><span class="cs-meth">lst.clear()</span><span class="cs-desc">Remove all items</span></div>
+      <div class="cs-row"><span class="cs-meth">lst[i:j]</span><span class="cs-desc">Slice from i to j</span></div>
+    </div>
+  </div>
+  <div class="vis-box">
+    <div class="section-title">Dictionary methods cheatsheet</div>
+    <div class="cheatsheet">
+      <div class="cs-row"><span class="cs-meth">d[key] = val</span><span class="cs-desc">Set or update a key</span></div>
+      <div class="cs-row"><span class="cs-meth">d[key]</span><span class="cs-desc">Access value (KeyError if missing)</span></div>
+      <div class="cs-row"><span class="cs-meth">d.get(k, default)</span><span class="cs-desc">Access with fallback default</span></div>
+      <div class="cs-row"><span class="cs-meth">del d[key]</span><span class="cs-desc">Delete a key</span></div>
+      <div class="cs-row"><span class="cs-meth">d.pop(key)</span><span class="cs-desc">Remove &amp; return value</span></div>
+      <div class="cs-row"><span class="cs-meth">key in d</span><span class="cs-desc">Check if key exists</span></div>
+      <div class="cs-row"><span class="cs-meth">d.keys()</span><span class="cs-desc">View of all keys</span></div>
+      <div class="cs-row"><span class="cs-meth">d.values()</span><span class="cs-desc">View of all values</span></div>
+      <div class="cs-row"><span class="cs-meth">d.items()</span><span class="cs-desc">View of (key, value) pairs</span></div>
+      <div class="cs-row"><span class="cs-meth">d.update(other)</span><span class="cs-desc">Merge another dict in</span></div>
+      <div class="cs-row"><span class="cs-meth">d.setdefault(k, v)</span><span class="cs-desc">Set key only if not present</span></div>
+      <div class="cs-row"><span class="cs-meth">d.clear()</span><span class="cs-desc">Remove all key-value pairs</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let myList = ["apple","banana","orange","pineapple"];
+let myDict = {name:"Alice", age:"25", city:"Lahore"};
+
+function switchTab(t) {
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['list','dict','ref'][i]===t));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+t).classList.add('active');
+}
+
+function renderList(newIdx=-1, hiIdx=-1) {
+  const d = document.getElementById('list-display');
+  d.innerHTML = myList.map((v,i)=>{
+    let cls='item';
+    if(i===newIdx) cls+=' new';
+    if(i===hiIdx) cls+=' highlight';
+    return `<div class="${cls}"><span class="item-val">${v}</span><span class="item-idx">[${i}]</span></div>`;
+  }).join('');
+  document.getElementById('len-display').textContent=`len(my_list) → ${myList.length}`;
+  if(newIdx>=0||hiIdx>=0) setTimeout(()=>d.querySelectorAll('.new,.highlight').forEach(el=>el.classList.remove('new','highlight')),900);
+}
+
+function renderDict(newKey='', hiKey='') {
+  const d = document.getElementById('dict-display');
+  d.innerHTML = Object.entries(myDict).map(([k,v])=>{
+    let cls='dict-entry';
+    if(k===newKey) cls+=' new';
+    if(k===hiKey) cls+=' highlight';
+    return `<div class="${cls}"><span class="dk">${k}</span><span class="dv">${v}</span></div>`;
+  }).join('');
+  document.getElementById('dict-len-display').textContent=`len(my_dict) → ${Object.keys(myDict).length}`;
+  if(newKey||hiKey) setTimeout(()=>d.querySelectorAll('.new,.highlight').forEach(el=>el.classList.remove('new','highlight')),900);
+}
+
+function setOut(id,msg,ok=true){const el=document.getElementById(id);el.textContent=msg;el.className='output-line '+(ok?'ok':'err');}
+function resetList(){myList=["apple","banana","orange","pineapple"];renderList();}
+function resetDict(){myDict={name:"Alice",age:"25",city:"Lahore"};renderDict();}
+
+function doAppend(){const v=document.getElementById('inp-append').value.trim();if(!v){setOut('out-append','⚠ enter a value',false);return;}myList.push(v);renderList(myList.length-1);setOut('out-append',`→ my_list is now length ${myList.length}`);document.getElementById('inp-append').value='';}
+function doInsert(){const i=parseInt(document.getElementById('inp-insert-i').value),x=document.getElementById('inp-insert-x').value.trim();if(isNaN(i)||!x){setOut('out-insert','⚠ enter index and value',false);return;}if(i<0||i>myList.length){setOut('out-insert','⚠ index out of range',false);return;}myList.splice(i,0,x);renderList(i);setOut('out-insert',`→ "${x}" inserted at [${i}]`);document.getElementById('inp-insert-i').value='';document.getElementById('inp-insert-x').value='';}
+function doRemove(){const v=document.getElementById('inp-remove').value.trim();if(!v){setOut('out-remove','⚠ enter a value',false);return;}const idx=myList.indexOf(v);if(idx===-1){setOut('out-remove',`⚠ ValueError: "${v}" not in list`,false);return;}myList.splice(idx,1);renderList();setOut('out-remove',`→ first "${v}" removed`);document.getElementById('inp-remove').value='';}
+function doPop(){if(!myList.length){setOut('out-pop','⚠ IndexError: pop from empty list',false);return;}const raw=document.getElementById('inp-pop').value.trim();let i=raw===''?myList.length-1:parseInt(raw);if(isNaN(i)||i<-myList.length||i>=myList.length){setOut('out-pop','⚠ IndexError: index out of range',false);return;}if(i<0)i=myList.length+i;const val=myList.splice(i,1)[0];renderList();setOut('out-pop',`→ popped "${val}" from [${i}]`);document.getElementById('inp-pop').value='';}
+function doAccess(){const raw=document.getElementById('inp-access').value.trim();let i=parseInt(raw);if(isNaN(i)){setOut('out-access','⚠ enter an integer index',false);return;}if(i<-myList.length||i>=myList.length){setOut('out-access','⚠ IndexError: index out of range',false);return;}if(i<0)i=myList.length+i;renderList(-1,i);setOut('out-access',`→ my_list[${i}] = "${myList[i]}"`);}
+function doUpdate(){const i=parseInt(document.getElementById('inp-upd-i').value),x=document.getElementById('inp-upd-x').value.trim();if(isNaN(i)||!x){setOut('out-update','⚠ enter index and value',false);return;}if(i<-myList.length||i>=myList.length){setOut('out-update','⚠ IndexError: index out of range',false);return;}const ni=i<0?myList.length+i:i;myList[ni]=x;renderList(-1,ni);setOut('out-update',`→ [${ni}] updated to "${x}"`);document.getElementById('inp-upd-i').value='';document.getElementById('inp-upd-x').value='';}
+function doSort(){myList.sort((a,b)=>isNaN(a)||isNaN(b)?String(a).localeCompare(String(b)):+a-+b);renderList();setOut('out-sort','→ list sorted in-place');}
+function doReverse(){myList.reverse();renderList();setOut('out-reverse','→ list reversed in-place');}
+function doIndex(){const v=document.getElementById('inp-index').value.trim();if(!v){setOut('out-index','⚠ enter a value',false);return;}const i=myList.indexOf(v);if(i===-1){setOut('out-index',`⚠ ValueError: "${v}" not in list`,false);return;}renderList(-1,i);setOut('out-index',`→ index of "${v}" = ${i}`);document.getElementById('inp-index').value='';}
+function doCount(){const v=document.getElementById('inp-count').value.trim();if(!v){setOut('out-count','⚠ enter a value',false);return;}const c=myList.filter(x=>x===v).length;setOut('out-count',`→ "${v}" appears ${c} time(s)`);document.getElementById('inp-count').value='';}
+function doExtend(){const raw=document.getElementById('inp-extend').value.trim();if(!raw){setOut('out-extend','⚠ enter comma-separated values',false);return;}const items=raw.split(',').map(s=>s.trim()).filter(Boolean);const startLen=myList.length;items.forEach(v=>myList.push(v));renderList(startLen);setOut('out-extend',`→ added ${items.length} item(s), length now ${myList.length}`);document.getElementById('inp-extend').value='';}
+function doClear(which){if(which==='list'){myList=[];renderList();setOut('out-clear-list','→ list cleared, length = 0');}else{myDict={};renderDict();setOut('out-clear-dict','→ dict cleared, length = 0');}}
+
+function doDictSet(){const k=document.getElementById('inp-dset-k').value.trim(),v=document.getElementById('inp-dset-v').value.trim();if(!k||!v){setOut('out-dset','⚠ enter key and value',false);return;}const existed=k in myDict;myDict[k]=v;renderDict(k);setOut('out-dset',existed?`→ updated "${k}" = "${v}"`:` → added "${k}": "${v}"`);document.getElementById('inp-dset-k').value='';document.getElementById('inp-dset-v').value='';}
+function doDictGet(){const k=document.getElementById('inp-dget').value.trim();if(!k){setOut('out-dget','⚠ enter a key',false);return;}if(!(k in myDict)){setOut('out-dget',`⚠ KeyError: "${k}"`,false);return;}renderDict('',k);setOut('out-dget',`→ d["${k}"] = "${myDict[k]}"`);document.getElementById('inp-dget').value='';}
+function doDictGetDef(){const k=document.getElementById('inp-dget2-k').value.trim(),df=document.getElementById('inp-dget2-d').value.trim()||'None';if(!k){setOut('out-dget2','⚠ enter a key',false);return;}const val=(k in myDict)?myDict[k]:df;if(k in myDict)renderDict('',k);setOut('out-dget2',`→ d.get("${k}") = "${val}"`);document.getElementById('inp-dget2-k').value='';document.getElementById('inp-dget2-d').value='';}
+function doDictDel(){const k=document.getElementById('inp-ddel').value.trim();if(!k){setOut('out-ddel','⚠ enter a key',false);return;}if(!(k in myDict)){setOut('out-ddel',`⚠ KeyError: "${k}"`,false);return;}delete myDict[k];renderDict();setOut('out-ddel',`→ deleted "${k}"`);document.getElementById('inp-ddel').value='';}
+function doDictPop(){const k=document.getElementById('inp-dpop').value.trim();if(!k){setOut('out-dpop','⚠ enter a key',false);return;}if(!(k in myDict)){setOut('out-dpop',`⚠ KeyError: "${k}"`,false);return;}const v=myDict[k];delete myDict[k];renderDict();setOut('out-dpop',`→ popped "${k}", returned "${v}"`);document.getElementById('inp-dpop').value='';}
+function doDictIn(){const k=document.getElementById('inp-din').value.trim();if(!k){setOut('out-din','⚠ enter a key',false);return;}const found=k in myDict;if(found)renderDict('',k);setOut('out-din',`→ "${k}" in d = ${found}`);document.getElementById('inp-din').value='';}
+function doDictKeys(){setOut('out-dkeys',`→ dict_keys([${Object.keys(myDict).map(k=>`"${k}"`).join(', ')}])`);}
+function doDictVals(){setOut('out-dvals',`→ dict_values([${Object.values(myDict).map(v=>`"${v}"`).join(', ')}])`);}
+function doDictItems(){setOut('out-ditems',`→ [${Object.entries(myDict).map(([k,v])=>`("${k}","${v}")`).join(', ')}]`);}
+function doDictUpdate(){const raw=document.getElementById('inp-dupd').value.trim();if(!raw){setOut('out-dupd','⚠ enter key:val pairs, comma-separated',false);return;}let added=0;raw.split(',').forEach(pair=>{const[k,v]=pair.split(':').map(s=>s.trim());if(k&&v){myDict[k]=v;added++;}});if(!added){setOut('out-dupd','⚠ invalid format — use key:val',false);return;}renderDict();setOut('out-dupd',`→ ${added} pair(s) merged into dict`);document.getElementById('inp-dupd').value='';}
+function doDictSetDefault(){const k=document.getElementById('inp-dsd-k').value.trim(),v=document.getElementById('inp-dsd-v').value.trim()||'None';if(!k){setOut('out-dsd','⚠ enter a key',false);return;}if(k in myDict){setOut('out-dsd',`→ "${k}" already exists, not changed`);renderDict('',k);}else{myDict[k]=v;renderDict(k);setOut('out-dsd',`→ "${k}" set to "${v}" (new key)`);}document.getElementById('inp-dsd-k').value='';document.getElementById('inp-dsd-v').value='';}
+
+renderList();
+renderDict();
+</script>
+</body>
+</html>
