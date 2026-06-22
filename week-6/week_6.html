@@ -1,327 +1,1458 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Python Lists & Dictionaries Playground</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f0f; color: #e8e8e8; min-height: 100vh; padding: 2rem 1rem; }
-  h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; color: #fff; }
-  .subtitle { font-size: 14px; color: #888; margin-bottom: 1.5rem; }
-  .tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; }
-  .tab { padding: 8px 22px; border-radius: 8px; border: 0.5px solid #333; font-size: 14px; font-weight: 500; cursor: pointer; background: #1a1a1a; color: #888; transition: all .15s; }
-  .tab.active { background: #252525; color: #e8e8e8; border-color: #555; }
-  .tab:hover { background: #222; }
-  .panel { display: none; } .panel.active { display: block; }
-  .section-title { font-size: 11px; font-weight: 500; color: #666; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
-  .vis-box { background: #1a1a1a; border-radius: 12px; border: 0.5px solid #2a2a2a; padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
-  .list-display { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-height: 60px; }
-  .list-label { font-family: 'Fira Code', 'Consolas', monospace; font-size: 12px; color: #666; margin-bottom: 8px; }
-  .item { display: flex; flex-direction: column; align-items: center; background: #222; border: 0.5px solid #333; border-radius: 8px; padding: 8px 14px; transition: all .3s; }
-  .item.new { border-color: #1d9e75; background: #0d2e22; }
-  .item.highlight { border-color: #e05a2b; background: #2e1a0d; }
-  .item-val { font-family: 'Fira Code', 'Consolas', monospace; font-size: 14px; font-weight: 500; color: #e8e8e8; }
-  .item-idx { font-family: 'Fira Code', 'Consolas', monospace; font-size: 10px; color: #555; }
-  .len-display { font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; color: #1d9e75; background: #0d2e22; border-radius: 8px; padding: 4px 10px; display: inline-block; margin-top: 8px; border: 0.5px solid #1d9e7540; }
-  .ops-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
-  .op-card { background: #1a1a1a; border: 0.5px solid #2a2a2a; border-radius: 12px; padding: 1rem; }
-  .op-name { font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; font-weight: 500; color: #e8e8e8; margin-bottom: 8px; }
-  .op-inputs { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-  .op-inputs input { flex: 1; min-width: 60px; max-width: 120px; font-family: 'Fira Code', 'Consolas', monospace; font-size: 12px; padding: 5px 8px; border-radius: 8px; border: 0.5px solid #333; background: #111; color: #e8e8e8; outline: none; }
-  .op-inputs input:focus { border-color: #555; }
-  .run-btn { padding: 5px 12px; border-radius: 8px; border: none; background: #e05a2b; color: #fff; font-size: 12px; font-weight: 500; cursor: pointer; transition: opacity .15s; white-space: nowrap; }
-  .run-btn.green { background: #1d9e75; }
-  .run-btn.red { background: #a32d2d; }
-  .run-btn:hover { opacity: .85; }
-  .output-line { font-family: 'Fira Code', 'Consolas', monospace; font-size: 12px; color: #666; margin-top: 6px; min-height: 18px; }
-  .output-line.ok { color: #1d9e75; }
-  .output-line.err { color: #d85a30; }
-  .dict-display { display: flex; flex-direction: column; gap: 6px; min-height: 60px; }
-  .dict-entry { display: flex; align-items: center; background: #222; border: 0.5px solid #333; border-radius: 8px; overflow: hidden; transition: all .3s; }
-  .dict-entry.new { border-color: #1d9e75; }
-  .dict-entry.highlight { border-color: #e05a2b; }
-  .dk { font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; font-weight: 500; padding: 6px 10px; background: #1a1a1a; color: #378add; border-right: 0.5px solid #333; min-width: 80px; }
-  .dv { font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; padding: 6px 10px; color: #e8e8e8; }
-  .reset-btn { padding: 5px 14px; border-radius: 8px; border: 0.5px solid #333; background: transparent; color: #888; font-size: 12px; cursor: pointer; }
-  .reset-btn:hover { background: #222; color: #e8e8e8; }
-  .cheatsheet { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
-  .cs-row { display: flex; align-items: baseline; gap: 8px; padding: 5px 8px; border-radius: 6px; }
-  .cs-row:nth-child(odd) { background: #1e1e1e; }
-  .cs-meth { font-family: 'Fira Code', 'Consolas', monospace; font-size: 12px; color: #378add; min-width: 160px; }
-  .cs-desc { font-size: 12px; color: #888; }
-  @media (max-width: 600px) { .ops-grid { grid-template-columns: 1fr; } .cheatsheet { grid-template-columns: 1fr; } }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python Lists & Dictionaries Playground</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f0f0f;
+      color: #e8e8e8;
+      min-height: 100vh;
+      padding: 2rem 1rem
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: #fff
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 1.5rem
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1.5rem
+    }
+
+    .tab {
+      padding: 8px 22px;
+      border-radius: 8px;
+      border: 0.5px solid #333;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      background: #1a1a1a;
+      color: #888;
+      transition: all .15s
+    }
+
+    .tab.active {
+      background: #252525;
+      color: #e8e8e8;
+      border-color: #555
+    }
+
+    .tab:hover {
+      background: #222
+    }
+
+    .panel {
+      display: none
+    }
+
+    .panel.active {
+      display: block
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: #666;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 8px
+    }
+
+    .vis-box {
+      background: #1a1a1a;
+      border-radius: 12px;
+      border: 0.5px solid #2a2a2a;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem
+    }
+
+    .vis-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px
+    }
+
+    .vis-header-right {
+      display: flex;
+      gap: 7px;
+      align-items: center
+    }
+
+    .list-label {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 8px
+    }
+
+    .list-display {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-height: 60px
+    }
+
+    .item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #222;
+      border: 0.5px solid #333;
+      border-radius: 8px;
+      padding: 8px 14px;
+      transition: all .3s
+    }
+
+    .item.new {
+      border-color: #1d9e75;
+      background: #0d2e22
+    }
+
+    .item.highlight {
+      border-color: #e05a2b;
+      background: #2e1a0d
+    }
+
+    .item-val {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 14px;
+      font-weight: 500;
+      color: #e8e8e8
+    }
+
+    .item-idx {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 10px;
+      color: #555
+    }
+
+    .len-display {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      color: #1d9e75;
+      background: #0d2e22;
+      border-radius: 8px;
+      padding: 4px 10px;
+      display: inline-block;
+      margin-top: 8px;
+      border: 0.5px solid #1d9e7540
+    }
+
+    .ops-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px
+    }
+
+    .op-card {
+      background: #1a1a1a;
+      border: 0.5px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 1rem
+    }
+
+    .op-name {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: #e8e8e8;
+      margin-bottom: 8px
+    }
+
+    .op-inputs {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    .op-inputs input {
+      flex: 1;
+      min-width: 60px;
+      max-width: 120px;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      padding: 5px 8px;
+      border-radius: 8px;
+      border: 0.5px solid #333;
+      background: #111;
+      color: #e8e8e8;
+      outline: none
+    }
+
+    .op-inputs input:focus {
+      border-color: #555
+    }
+
+    .run-btn {
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: none;
+      background: #e05a2b;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity .15s;
+      white-space: nowrap
+    }
+
+    .run-btn.green {
+      background: #1d9e75
+    }
+
+    .run-btn.red {
+      background: #a32d2d
+    }
+
+    .run-btn:hover {
+      opacity: .85
+    }
+
+    .info-btn {
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 0.5px solid #3a3a3a;
+      background: #1e1e1e;
+      color: #888;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px
+    }
+
+    .info-btn:hover {
+      background: #2a2a2a;
+      color: #bbb;
+      border-color: #555
+    }
+
+    .info-btn svg {
+      width: 11px;
+      height: 11px
+    }
+
+    /* overview button — sits in vis-box header */
+    .ov-btn {
+      padding: 5px 11px;
+      border-radius: 8px;
+      border: 0.5px solid #2d4a2d;
+      background: #0d1e0d;
+      color: #5dba5d;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .ov-btn:hover {
+      background: #112511;
+      border-color: #3d6a3d;
+      color: #7dd97d
+    }
+
+    .ov-btn svg {
+      width: 12px;
+      height: 12px
+    }
+
+    .reset-btn {
+      padding: 5px 14px;
+      border-radius: 8px;
+      border: 0.5px solid #333;
+      background: transparent;
+      color: #888;
+      font-size: 12px;
+      cursor: pointer
+    }
+
+    .reset-btn:hover {
+      background: #222;
+      color: #e8e8e8
+    }
+
+    .output-line {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      color: #666;
+      margin-top: 6px;
+      min-height: 18px
+    }
+
+    .output-line.ok {
+      color: #1d9e75
+    }
+
+    .output-line.err {
+      color: #d85a30
+    }
+
+    .dict-display {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 60px
+    }
+
+    .dict-entry {
+      display: flex;
+      align-items: center;
+      background: #222;
+      border: 0.5px solid #333;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all .3s
+    }
+
+    .dict-entry.new {
+      border-color: #1d9e75
+    }
+
+    .dict-entry.highlight {
+      border-color: #e05a2b
+    }
+
+    .dk {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 10px;
+      background: #1a1a1a;
+      color: #378add;
+      border-right: 0.5px solid #333;
+      min-width: 80px
+    }
+
+    .dv {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      padding: 6px 10px;
+      color: #e8e8e8
+    }
+
+    .cheatsheet {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 8px
+    }
+
+    .cs-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 5px 8px;
+      border-radius: 6px
+    }
+
+    .cs-row:nth-child(odd) {
+      background: #1e1e1e
+    }
+
+    .cs-meth {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      color: #378add;
+      min-width: 160px
+    }
+
+    .cs-desc {
+      font-size: 12px;
+      color: #888
+    }
+
+    /* ── Method detail modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .modal {
+      background: #181818;
+      border: 0.5px solid #333;
+      border-radius: 16px;
+      max-width: 480px;
+      width: 90%;
+      padding: 1.5rem;
+      position: relative;
+      transform: translateY(12px) scale(.97);
+      transition: transform .2s;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .6)
+    }
+
+    .modal-overlay.open .modal {
+      transform: translateY(0) scale(1)
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: #222;
+      border: 0.5px solid #333;
+      color: #888;
+      border-radius: 6px;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all .15s
+    }
+
+    .modal-close:hover {
+      background: #2e2e2e;
+      color: #e8e8e8
+    }
+
+    .modal-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 5px;
+      margin-bottom: 10px
+    }
+
+    .modal-tag.list {
+      background: #1d2e45;
+      color: #378add;
+      border: 0.5px solid #378add40
+    }
+
+    .modal-tag.dict {
+      background: #2e1d45;
+      color: #9d78e0;
+      border: 0.5px solid #9d78e040
+    }
+
+    .modal-title {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 6px
+    }
+
+    .modal-desc {
+      font-size: 13px;
+      color: #aaa;
+      line-height: 1.6;
+      margin-bottom: 14px
+    }
+
+    .modal-section-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #555;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 6px
+    }
+
+    .modal-syntax {
+      background: #111;
+      border: 0.5px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      color: #e8e8e8;
+      margin-bottom: 14px;
+      line-height: 1.7
+    }
+
+    .modal-syntax .kw {
+      color: #e05a2b
+    }
+
+    .modal-syntax .cm {
+      color: #555
+    }
+
+    .modal-syntax .str {
+      color: #1d9e75
+    }
+
+    .modal-syntax .num {
+      color: #378add
+    }
+
+    .modal-notes {
+      background: #0d1e2e;
+      border: 0.5px solid #1a3a5a;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #7ab3d9;
+      line-height: 1.6
+    }
+
+    .modal-notes ul {
+      padding-left: 16px
+    }
+
+    .modal-notes li {
+      margin-bottom: 3px
+    }
+
+    /* ── Overview modal ── */
+    .ov-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      z-index: 1100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s
+    }
+
+    .ov-overlay.open {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .ov-modal {
+      background: #181818;
+      border: 0.5px solid #333;
+      border-radius: 18px;
+      max-width: 560px;
+      width: 93%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 1.75rem 1.5rem 1.5rem;
+      position: relative;
+      transform: translateY(14px) scale(.97);
+      transition: transform .22s;
+      box-shadow: 0 28px 70px rgba(0, 0, 0, .7);
+      scrollbar-width: thin;
+      scrollbar-color: #333 transparent
+    }
+
+    .ov-overlay.open .ov-modal {
+      transform: translateY(0) scale(1)
+    }
+
+    .ov-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: #222;
+      border: 0.5px solid #333;
+      color: #888;
+      border-radius: 6px;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all .15s
+    }
+
+    .ov-close:hover {
+      background: #2e2e2e;
+      color: #e8e8e8
+    }
+
+    .ov-hero {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px
+    }
+
+    .ov-emoji {
+      font-size: 30px;
+      background: #222;
+      border-radius: 10px;
+      padding: 8px 10px;
+      border: 0.5px solid #333;
+      line-height: 1
+    }
+
+    .ov-headline {
+      font-size: 19px;
+      font-weight: 700;
+      color: #fff
+    }
+
+    .ov-mono {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      color: #555;
+      margin-top: 3px
+    }
+
+    .ov-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 5px;
+      margin: 12px 0 16px
+    }
+
+    .ov-badge.list {
+      background: #1d2e45;
+      color: #378add;
+      border: 0.5px solid #378add40
+    }
+
+    .ov-badge.dict {
+      background: #2e1d45;
+      color: #9d78e0;
+      border: 0.5px solid #9d78e040
+    }
+
+    .ov-sec {
+      margin-bottom: 18px
+    }
+
+    .ov-lbl {
+      font-size: 10px;
+      font-weight: 600;
+      color: #555;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 8px
+    }
+
+    .ov-text {
+      font-size: 13px;
+      color: #bbb;
+      line-height: 1.75
+    }
+
+    .ov-traits {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px
+    }
+
+    .ov-trait {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #222;
+      border: 0.5px solid #333;
+      color: #999
+    }
+
+    .ov-trait b {
+      color: #e8e8e8
+    }
+
+    .ov-code {
+      background: #111;
+      border: 0.5px solid #2a2a2a;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      color: #e8e8e8;
+      line-height: 1.85
+    }
+
+    .ov-code .kw {
+      color: #e05a2b
+    }
+
+    .ov-code .cm {
+      color: #555
+    }
+
+    .ov-code .str {
+      color: #1d9e75
+    }
+
+    .ov-code .num {
+      color: #378add
+    }
+
+    .ov-code .fn {
+      color: #c792ea
+    }
+
+    .ov-rw-box {
+      background: #0d1e0d;
+      border: 0.5px solid #1a3a1a;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #7dd97d;
+      line-height: 1.75
+    }
+
+    .ov-rw-box ul {
+      padding-left: 16px
+    }
+
+    .ov-rw-box li {
+      margin-bottom: 5px
+    }
+
+    .ov-rw-box b {
+      color: #a8f0a8
+    }
+
+    .ov-vs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 6px
+    }
+
+    .ov-vs-card {
+      background: #1e1e1e;
+      border: 0.5px solid #2e2e2e;
+      border-radius: 8px;
+      padding: 10px 12px
+    }
+
+    .ov-vs-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #888;
+      margin-bottom: 5px
+    }
+
+    .ov-vs-body {
+      font-size: 12px;
+      color: #999;
+      line-height: 1.5
+    }
+
+    @media(max-width:600px) {
+      .ops-grid {
+        grid-template-columns: 1fr
+      }
+
+      .cheatsheet {
+        grid-template-columns: 1fr
+      }
+
+      .ov-vs-grid {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<h1>🐍 Python Lists &amp; Dictionaries Playground</h1>
-<p class="subtitle">Ordered, mutable, zero-indexed. Click any operation to see it happen live!</p>
+  <h1>🐍 Python Lists &amp; Dictionaries Playground</h1>
+  <p class="subtitle">Ordered, mutable, zero-indexed. Click any operation to see it happen live!</p>
 
-<div class="tabs">
-  <button class="tab active" onclick="switchTab('list')">📋 Lists</button>
-  <button class="tab" onclick="switchTab('dict')">📖 Dictionaries</button>
-  <button class="tab" onclick="switchTab('ref')">📚 Quick Reference</button>
-</div>
-
-<!-- LIST PANEL -->
-<div id="panel-list" class="panel active">
-  <div class="vis-box">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-      <div class="section-title">Live list</div>
-      <button class="reset-btn" onclick="resetList()">↺ reset</button>
-    </div>
-    <div class="list-label">my_list =</div>
-    <div class="list-display" id="list-display"></div>
-    <div class="len-display" id="len-display">len(my_list) → 0</div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('list')">📋 Lists</button>
+    <button class="tab" onclick="switchTab('dict')">📖 Dictionaries</button>
+    <button class="tab" onclick="switchTab('ref')">📚 Quick Reference</button>
   </div>
 
-  <div class="section-title" style="margin-bottom:8px">Operations</div>
-  <div class="ops-grid">
-    <div class="op-card">
-      <div class="op-name">lst.append(x)</div>
-      <div class="op-inputs"><input id="inp-append" placeholder="value" /><button class="run-btn" onclick="doAppend()">Run</button></div>
-      <div class="output-line" id="out-append"></div>
+  <!-- ═══════════ LIST PANEL ═══════════ -->
+  <div id="panel-list" class="panel active">
+    <div class="vis-box">
+      <div class="vis-header">
+        <div class="section-title">Live list</div>
+        <div class="vis-header-right">
+          <button class="ov-btn" onclick="showOverview('list')">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>
+            What is a List?
+          </button>
+          <button class="reset-btn" onclick="resetList()">↺ reset</button>
+        </div>
+      </div>
+      <div class="list-label">my_list =</div>
+      <div class="list-display" id="list-display"></div>
+      <div class="len-display" id="len-display">len(my_list) → 0</div>
     </div>
-    <div class="op-card">
-      <div class="op-name">lst.insert(i, x)</div>
-      <div class="op-inputs"><input id="inp-insert-i" placeholder="index" style="max-width:60px"/><input id="inp-insert-x" placeholder="value"/><button class="run-btn" onclick="doInsert()">Run</button></div>
-      <div class="output-line" id="out-insert"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">lst.remove(x)</div>
-      <div class="op-inputs"><input id="inp-remove" placeholder="value"/><button class="run-btn" onclick="doRemove()">Run</button></div>
-      <div class="output-line" id="out-remove"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">lst.pop(i)</div>
-      <div class="op-inputs"><input id="inp-pop" placeholder="index (blank=last)"/><button class="run-btn" onclick="doPop()">Run</button></div>
-      <div class="output-line" id="out-pop"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">lst[i] — access</div>
-      <div class="op-inputs"><input id="inp-access" placeholder="index"/><button class="run-btn green" onclick="doAccess()">Run</button></div>
-      <div class="output-line" id="out-access"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">lst[i] = x — update</div>
-      <div class="op-inputs"><input id="inp-upd-i" placeholder="index" style="max-width:60px"/><input id="inp-upd-x" placeholder="new value"/><button class="run-btn" onclick="doUpdate()">Run</button></div>
-      <div class="output-line" id="out-update"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">lst.sort()</div>
-      <div class="op-inputs"><button class="run-btn" onclick="doSort()">Run</button></div>
-      <div class="output-line" id="out-sort"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">lst.reverse()</div>
-      <div class="op-inputs"><button class="run-btn" onclick="doReverse()">Run</button></div>
-      <div class="output-line" id="out-reverse"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">lst.index(x)</div>
-      <div class="op-inputs"><input id="inp-index" placeholder="value"/><button class="run-btn green" onclick="doIndex()">Run</button></div>
-      <div class="output-line" id="out-index"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">lst.count(x)</div>
-      <div class="op-inputs"><input id="inp-count" placeholder="value"/><button class="run-btn green" onclick="doCount()">Run</button></div>
-      <div class="output-line" id="out-count"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">lst.extend(iterable)</div>
-      <div class="op-inputs"><input id="inp-extend" placeholder="e.g. 10,20,30"/><button class="run-btn" onclick="doExtend()">Run</button></div>
-      <div class="output-line" id="out-extend"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">lst.clear()</div>
-      <div class="op-inputs"><button class="run-btn red" onclick="doClear('list')">Run</button></div>
-      <div class="output-line" id="out-clear-list"></div>
+
+    <div class="section-title" style="margin-bottom:8px">Operations</div>
+    <div class="ops-grid">
+      <div class="op-card">
+        <div class="op-name">lst.append(x)</div>
+        <div class="op-inputs"><input id="inp-append" placeholder="value" /><button class="run-btn"
+            onclick="doAppend()">Run</button><button class="info-btn" onclick="showDetail('append')"><svg
+              viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-append"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">lst.insert(i, x)</div>
+        <div class="op-inputs"><input id="inp-insert-i" placeholder="index" style="max-width:60px" /><input
+            id="inp-insert-x" placeholder="value" /><button class="run-btn" onclick="doInsert()">Run</button><button
+            class="info-btn" onclick="showDetail('insert')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor"
+              stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-insert"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">lst.remove(x)</div>
+        <div class="op-inputs"><input id="inp-remove" placeholder="value" /><button class="run-btn"
+            onclick="doRemove()">Run</button><button class="info-btn" onclick="showDetail('remove')"><svg
+              viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-remove"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">lst.pop(i)</div>
+        <div class="op-inputs"><input id="inp-pop" placeholder="index (blank=last)" /><button class="run-btn"
+            onclick="doPop()">Run</button><button class="info-btn" onclick="showDetail('pop')"><svg viewBox="0 0 16 16"
+              fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-pop"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">lst[i] — access</div>
+        <div class="op-inputs"><input id="inp-access" placeholder="index" /><button class="run-btn green"
+            onclick="doAccess()">Run</button><button class="info-btn" onclick="showDetail('access')"><svg
+              viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-access"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">lst[i] = x — update</div>
+        <div class="op-inputs"><input id="inp-upd-i" placeholder="index" style="max-width:60px" /><input id="inp-upd-x"
+            placeholder="new value" /><button class="run-btn" onclick="doUpdate()">Run</button><button class="info-btn"
+            onclick="showDetail('update')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor"
+              stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-update"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">lst.sort()</div>
+        <div class="op-inputs"><button class="run-btn" onclick="doSort()">Run</button><button class="info-btn"
+            onclick="showDetail('sort')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-sort"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">lst.reverse()</div>
+        <div class="op-inputs"><button class="run-btn" onclick="doReverse()">Run</button><button class="info-btn"
+            onclick="showDetail('reverse')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor"
+              stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-reverse"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">lst.index(x)</div>
+        <div class="op-inputs"><input id="inp-index" placeholder="value" /><button class="run-btn green"
+            onclick="doIndex()">Run</button><button class="info-btn" onclick="showDetail('index')"><svg
+              viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-index"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">lst.count(x)</div>
+        <div class="op-inputs"><input id="inp-count" placeholder="value" /><button class="run-btn green"
+            onclick="doCount()">Run</button><button class="info-btn" onclick="showDetail('count')"><svg
+              viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-count"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">lst.extend(iterable)</div>
+        <div class="op-inputs"><input id="inp-extend" placeholder="e.g. 10,20,30" /><button class="run-btn"
+            onclick="doExtend()">Run</button><button class="info-btn" onclick="showDetail('extend')"><svg
+              viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-extend"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">lst.clear()</div>
+        <div class="op-inputs"><button class="run-btn red" onclick="doClear('list')">Run</button><button
+            class="info-btn" onclick="showDetail('list-clear')"><svg viewBox="0 0 16 16" fill="none"
+              stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-clear-list"></div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- DICT PANEL -->
-<div id="panel-dict" class="panel">
-  <div class="vis-box">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-      <div class="section-title">Live dictionary</div>
-      <button class="reset-btn" onclick="resetDict()">↺ reset</button>
+  <!-- ═══════════ DICT PANEL ═══════════ -->
+  <div id="panel-dict" class="panel">
+    <div class="vis-box">
+      <div class="vis-header">
+        <div class="section-title">Live dictionary</div>
+        <div class="vis-header-right">
+          <button class="ov-btn" onclick="showOverview('dict')">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>
+            What is a Dict?
+          </button>
+          <button class="reset-btn" onclick="resetDict()">↺ reset</button>
+        </div>
+      </div>
+      <div class="list-label">my_dict =</div>
+      <div class="dict-display" id="dict-display"></div>
+      <div class="len-display" id="dict-len-display">len(my_dict) → 0</div>
     </div>
-    <div class="list-label">my_dict =</div>
-    <div class="dict-display" id="dict-display"></div>
-    <div class="len-display" id="dict-len-display">len(my_dict) → 0</div>
+
+    <div class="section-title" style="margin-bottom:8px">Operations</div>
+    <div class="ops-grid">
+      <div class="op-card">
+        <div class="op-name">d[key] = value — set</div>
+        <div class="op-inputs"><input id="inp-dset-k" placeholder="key" style="max-width:80px" /><input id="inp-dset-v"
+            placeholder="value" /><button class="run-btn" onclick="doDictSet()">Run</button><button class="info-btn"
+            onclick="showDetail('dset')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-dset"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">d[key] — access</div>
+        <div class="op-inputs"><input id="inp-dget" placeholder="key" /><button class="run-btn green"
+            onclick="doDictGet()">Run</button><button class="info-btn" onclick="showDetail('dget')"><svg
+              viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-dget"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">d.get(key, default)</div>
+        <div class="op-inputs"><input id="inp-dget2-k" placeholder="key" style="max-width:80px" /><input
+            id="inp-dget2-d" placeholder="default" /><button class="run-btn green"
+            onclick="doDictGetDef()">Run</button><button class="info-btn" onclick="showDetail('dget2')"><svg
+              viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-dget2"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">del d[key]</div>
+        <div class="op-inputs"><input id="inp-ddel" placeholder="key" /><button class="run-btn"
+            onclick="doDictDel()">Run</button><button class="info-btn" onclick="showDetail('ddel')"><svg
+              viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-ddel"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">d.pop(key)</div>
+        <div class="op-inputs"><input id="inp-dpop" placeholder="key" /><button class="run-btn"
+            onclick="doDictPop()">Run</button><button class="info-btn" onclick="showDetail('dpop')"><svg
+              viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-dpop"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">key in d — check</div>
+        <div class="op-inputs"><input id="inp-din" placeholder="key" /><button class="run-btn green"
+            onclick="doDictIn()">Run</button><button class="info-btn" onclick="showDetail('din')"><svg
+              viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-din"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">d.keys()</div>
+        <div class="op-inputs"><button class="run-btn green" onclick="doDictKeys()">Run</button><button class="info-btn"
+            onclick="showDetail('dkeys')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-dkeys"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">d.values()</div>
+        <div class="op-inputs"><button class="run-btn green" onclick="doDictVals()">Run</button><button class="info-btn"
+            onclick="showDetail('dvals')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-dvals"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">d.items()</div>
+        <div class="op-inputs"><button class="run-btn green" onclick="doDictItems()">Run</button><button
+            class="info-btn" onclick="showDetail('ditems')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor"
+              stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-ditems"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">d.update(other)</div>
+        <div class="op-inputs"><input id="inp-dupd" placeholder="key:val, key:val" /><button class="run-btn"
+            onclick="doDictUpdate()">Run</button><button class="info-btn" onclick="showDetail('dupd')"><svg
+              viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-dupd"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">d.setdefault(k, v)</div>
+        <div class="op-inputs"><input id="inp-dsd-k" placeholder="key" style="max-width:80px" /><input id="inp-dsd-v"
+            placeholder="default" /><button class="run-btn" onclick="doDictSetDefault()">Run</button><button
+            class="info-btn" onclick="showDetail('dsd')"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor"
+              stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-dsd"></div>
+      </div>
+      <div class="op-card">
+        <div class="op-name">d.clear()</div>
+        <div class="op-inputs"><button class="run-btn red" onclick="doClear('dict')">Run</button><button
+            class="info-btn" onclick="showDetail('dict-clear')"><svg viewBox="0 0 16 16" fill="none"
+              stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="8" r="6.5" />
+              <line x1="8" y1="7" x2="8" y2="11" />
+              <circle cx="8" cy="5" r=".6" fill="currentColor" stroke="none" />
+            </svg>Info</button></div>
+        <div class="output-line" id="out-clear-dict"></div>
+      </div>
+    </div>
   </div>
 
-  <div class="section-title" style="margin-bottom:8px">Operations</div>
-  <div class="ops-grid">
-    <div class="op-card">
-      <div class="op-name">d[key] = value — set</div>
-      <div class="op-inputs"><input id="inp-dset-k" placeholder="key" style="max-width:80px"/><input id="inp-dset-v" placeholder="value"/><button class="run-btn" onclick="doDictSet()">Run</button></div>
-      <div class="output-line" id="out-dset"></div>
+  <!-- ═══════════ REFERENCE PANEL ═══════════ -->
+  <div id="panel-ref" class="panel">
+    <div class="vis-box">
+      <div class="section-title">List methods cheatsheet</div>
+      <div class="cheatsheet">
+        <div class="cs-row"><span class="cs-meth">lst.append(x)</span><span class="cs-desc">Add x to end</span></div>
+        <div class="cs-row"><span class="cs-meth">lst.insert(i, x)</span><span class="cs-desc">Insert x at index
+            i</span></div>
+        <div class="cs-row"><span class="cs-meth">lst.remove(x)</span><span class="cs-desc">Remove first occurrence of
+            x</span></div>
+        <div class="cs-row"><span class="cs-meth">lst.pop(i)</span><span class="cs-desc">Remove &amp; return item at
+            i</span></div>
+        <div class="cs-row"><span class="cs-meth">lst.extend(iter)</span><span class="cs-desc">Add all items from
+            iterable</span></div>
+        <div class="cs-row"><span class="cs-meth">lst.sort()</span><span class="cs-desc">Sort list in-place</span></div>
+        <div class="cs-row"><span class="cs-meth">lst.reverse()</span><span class="cs-desc">Reverse list in-place</span>
+        </div>
+        <div class="cs-row"><span class="cs-meth">lst.index(x)</span><span class="cs-desc">First index of x</span></div>
+        <div class="cs-row"><span class="cs-meth">lst.count(x)</span><span class="cs-desc">Count occurrences of x</span>
+        </div>
+        <div class="cs-row"><span class="cs-meth">lst.copy()</span><span class="cs-desc">Return a shallow copy</span>
+        </div>
+        <div class="cs-row"><span class="cs-meth">lst.clear()</span><span class="cs-desc">Remove all items</span></div>
+        <div class="cs-row"><span class="cs-meth">lst[i:j]</span><span class="cs-desc">Slice from i to j</span></div>
+      </div>
     </div>
-    <div class="op-card">
-      <div class="op-name">d[key] — access</div>
-      <div class="op-inputs"><input id="inp-dget" placeholder="key"/><button class="run-btn green" onclick="doDictGet()">Run</button></div>
-      <div class="output-line" id="out-dget"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">d.get(key, default)</div>
-      <div class="op-inputs"><input id="inp-dget2-k" placeholder="key" style="max-width:80px"/><input id="inp-dget2-d" placeholder="default"/><button class="run-btn green" onclick="doDictGetDef()">Run</button></div>
-      <div class="output-line" id="out-dget2"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">del d[key]</div>
-      <div class="op-inputs"><input id="inp-ddel" placeholder="key"/><button class="run-btn" onclick="doDictDel()">Run</button></div>
-      <div class="output-line" id="out-ddel"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">d.pop(key)</div>
-      <div class="op-inputs"><input id="inp-dpop" placeholder="key"/><button class="run-btn" onclick="doDictPop()">Run</button></div>
-      <div class="output-line" id="out-dpop"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">key in d — check</div>
-      <div class="op-inputs"><input id="inp-din" placeholder="key"/><button class="run-btn green" onclick="doDictIn()">Run</button></div>
-      <div class="output-line" id="out-din"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">d.keys()</div>
-      <div class="op-inputs"><button class="run-btn green" onclick="doDictKeys()">Run</button></div>
-      <div class="output-line" id="out-dkeys"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">d.values()</div>
-      <div class="op-inputs"><button class="run-btn green" onclick="doDictVals()">Run</button></div>
-      <div class="output-line" id="out-dvals"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">d.items()</div>
-      <div class="op-inputs"><button class="run-btn green" onclick="doDictItems()">Run</button></div>
-      <div class="output-line" id="out-ditems"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">d.update(other)</div>
-      <div class="op-inputs"><input id="inp-dupd" placeholder="key:val, key:val"/><button class="run-btn" onclick="doDictUpdate()">Run</button></div>
-      <div class="output-line" id="out-dupd"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">d.setdefault(k, v)</div>
-      <div class="op-inputs"><input id="inp-dsd-k" placeholder="key" style="max-width:80px"/><input id="inp-dsd-v" placeholder="default"/><button class="run-btn" onclick="doDictSetDefault()">Run</button></div>
-      <div class="output-line" id="out-dsd"></div>
-    </div>
-    <div class="op-card">
-      <div class="op-name">d.clear()</div>
-      <div class="op-inputs"><button class="run-btn red" onclick="doClear('dict')">Run</button></div>
-      <div class="output-line" id="out-clear-dict"></div>
+    <div class="vis-box">
+      <div class="section-title">Dictionary methods cheatsheet</div>
+      <div class="cheatsheet">
+        <div class="cs-row"><span class="cs-meth">d[key] = val</span><span class="cs-desc">Set or update a key</span>
+        </div>
+        <div class="cs-row"><span class="cs-meth">d[key]</span><span class="cs-desc">Access value (KeyError if
+            missing)</span></div>
+        <div class="cs-row"><span class="cs-meth">d.get(k, default)</span><span class="cs-desc">Access with fallback
+            default</span></div>
+        <div class="cs-row"><span class="cs-meth">del d[key]</span><span class="cs-desc">Delete a key</span></div>
+        <div class="cs-row"><span class="cs-meth">d.pop(key)</span><span class="cs-desc">Remove &amp; return
+            value</span></div>
+        <div class="cs-row"><span class="cs-meth">key in d</span><span class="cs-desc">Check if key exists</span></div>
+        <div class="cs-row"><span class="cs-meth">d.keys()</span><span class="cs-desc">View of all keys</span></div>
+        <div class="cs-row"><span class="cs-meth">d.values()</span><span class="cs-desc">View of all values</span></div>
+        <div class="cs-row"><span class="cs-meth">d.items()</span><span class="cs-desc">View of (key, value)
+            pairs</span></div>
+        <div class="cs-row"><span class="cs-meth">d.update(other)</span><span class="cs-desc">Merge another dict
+            in</span></div>
+        <div class="cs-row"><span class="cs-meth">d.setdefault(k, v)</span><span class="cs-desc">Set key only if not
+            present</span></div>
+        <div class="cs-row"><span class="cs-meth">d.clear()</span><span class="cs-desc">Remove all key-value
+            pairs</span></div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- REFERENCE PANEL -->
-<div id="panel-ref" class="panel">
-  <div class="vis-box">
-    <div class="section-title">List methods cheatsheet</div>
-    <div class="cheatsheet">
-      <div class="cs-row"><span class="cs-meth">lst.append(x)</span><span class="cs-desc">Add x to end</span></div>
-      <div class="cs-row"><span class="cs-meth">lst.insert(i, x)</span><span class="cs-desc">Insert x at index i</span></div>
-      <div class="cs-row"><span class="cs-meth">lst.remove(x)</span><span class="cs-desc">Remove first occurrence of x</span></div>
-      <div class="cs-row"><span class="cs-meth">lst.pop(i)</span><span class="cs-desc">Remove &amp; return item at i</span></div>
-      <div class="cs-row"><span class="cs-meth">lst.extend(iter)</span><span class="cs-desc">Add all items from iterable</span></div>
-      <div class="cs-row"><span class="cs-meth">lst.sort()</span><span class="cs-desc">Sort list in-place</span></div>
-      <div class="cs-row"><span class="cs-meth">lst.reverse()</span><span class="cs-desc">Reverse list in-place</span></div>
-      <div class="cs-row"><span class="cs-meth">lst.index(x)</span><span class="cs-desc">First index of x</span></div>
-      <div class="cs-row"><span class="cs-meth">lst.count(x)</span><span class="cs-desc">Count occurrences of x</span></div>
-      <div class="cs-row"><span class="cs-meth">lst.copy()</span><span class="cs-desc">Return a shallow copy</span></div>
-      <div class="cs-row"><span class="cs-meth">lst.clear()</span><span class="cs-desc">Remove all items</span></div>
-      <div class="cs-row"><span class="cs-meth">lst[i:j]</span><span class="cs-desc">Slice from i to j</span></div>
+  <!-- ═══════════ METHOD DETAIL MODAL ═══════════ -->
+  <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modal-tag" class="modal-tag list">List</div>
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-desc" id="modal-desc"></div>
+      <div class="modal-section-label">Syntax</div>
+      <div class="modal-syntax" id="modal-syntax"></div>
+      <div class="modal-section-label">Notes</div>
+      <div class="modal-notes" id="modal-notes"></div>
     </div>
   </div>
-  <div class="vis-box">
-    <div class="section-title">Dictionary methods cheatsheet</div>
-    <div class="cheatsheet">
-      <div class="cs-row"><span class="cs-meth">d[key] = val</span><span class="cs-desc">Set or update a key</span></div>
-      <div class="cs-row"><span class="cs-meth">d[key]</span><span class="cs-desc">Access value (KeyError if missing)</span></div>
-      <div class="cs-row"><span class="cs-meth">d.get(k, default)</span><span class="cs-desc">Access with fallback default</span></div>
-      <div class="cs-row"><span class="cs-meth">del d[key]</span><span class="cs-desc">Delete a key</span></div>
-      <div class="cs-row"><span class="cs-meth">d.pop(key)</span><span class="cs-desc">Remove &amp; return value</span></div>
-      <div class="cs-row"><span class="cs-meth">key in d</span><span class="cs-desc">Check if key exists</span></div>
-      <div class="cs-row"><span class="cs-meth">d.keys()</span><span class="cs-desc">View of all keys</span></div>
-      <div class="cs-row"><span class="cs-meth">d.values()</span><span class="cs-desc">View of all values</span></div>
-      <div class="cs-row"><span class="cs-meth">d.items()</span><span class="cs-desc">View of (key, value) pairs</span></div>
-      <div class="cs-row"><span class="cs-meth">d.update(other)</span><span class="cs-desc">Merge another dict in</span></div>
-      <div class="cs-row"><span class="cs-meth">d.setdefault(k, v)</span><span class="cs-desc">Set key only if not present</span></div>
-      <div class="cs-row"><span class="cs-meth">d.clear()</span><span class="cs-desc">Remove all key-value pairs</span></div>
+
+  <!-- ═══════════ OVERVIEW MODAL ═══════════ -->
+  <div class="ov-overlay" id="ov-overlay" onclick="if(event.target===this)closeOv()">
+    <div class="ov-modal">
+      <button class="ov-close" onclick="closeOv()">✕</button>
+
+      <div class="ov-hero">
+        <div class="ov-emoji" id="ov-emoji"></div>
+        <div>
+          <div class="ov-headline" id="ov-headline"></div>
+          <div class="ov-mono" id="ov-mono"></div>
+        </div>
+      </div>
+      <div class="ov-badge" id="ov-badge"></div>
+
+      <div class="ov-sec">
+        <div class="ov-lbl">Definition</div>
+        <div class="ov-text" id="ov-def"></div>
+      </div>
+
+      <div class="ov-sec">
+        <div class="ov-lbl">Key Characteristics</div>
+        <div class="ov-traits" id="ov-traits"></div>
+      </div>
+
+      <div class="ov-sec">
+        <div class="ov-lbl">Code Example</div>
+        <div class="ov-code" id="ov-code"></div>
+      </div>
+
+      <div class="ov-sec">
+        <div class="ov-lbl">Real-World Use Cases</div>
+        <div class="ov-rw-box" id="ov-rw"></div>
+      </div>
+
+      <div class="ov-sec">
+        <div class="ov-lbl" id="ov-vs-lbl"></div>
+        <div class="ov-vs-grid" id="ov-vs"></div>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-let myList = ["apple","banana","orange","pineapple"];
-let myDict = {name:"Alice", age:"25", city:"Lahore"};
+  <script>
+    /* ── State ── */
+    let myList = ["apple", "banana", "orange", "pineapple"];
+    let myDict = { name: "Alice", age: "25", city: "Lahore" };
 
-function switchTab(t) {
-  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['list','dict','ref'][i]===t));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('panel-'+t).classList.add('active');
+    /* ── Tab switching ── */
+    function switchTab(t) {
+      document.querySelectorAll('.tab').forEach((b, i) => b.classList.toggle('active', ['list', 'dict', 'ref'][i] === t));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + t).classList.add('active');
+    }
+
+    /* ── Render helpers ── */
+    function renderList(newIdx = -1, hiIdx = -1) {
+      const d = document.getElementById('list-display');
+      d.innerHTML = myList.map((v, i) => {
+        let c = 'item'; if (i === newIdx) c += ' new'; if (i === hiIdx) c += ' highlight';
+        return `<div class="${c}"><span class="item-val">${v}</span><span class="item-idx">[${i}]</span></div>`;
+      }).join('');
+      document.getElementById('len-display').textContent = `len(my_list) → ${myList.length}`;
+      if (newIdx >= 0 || hiIdx >= 0) setTimeout(() => d.querySelectorAll('.new,.highlight').forEach(e => e.classList.remove('new', 'highlight')), 900);
+    }
+    function renderDict(nk = '', hk = '') {
+      const d = document.getElementById('dict-display');
+      d.innerHTML = Object.entries(myDict).map(([k, v]) => {
+        let c = 'dict-entry'; if (k === nk) c += ' new'; if (k === hk) c += ' highlight';
+        return `<div class="${c}"><span class="dk">${k}</span><span class="dv">${v}</span></div>`;
+      }).join('');
+      document.getElementById('dict-len-display').textContent = `len(my_dict) → ${Object.keys(myDict).length}`;
+      if (nk || hk) setTimeout(() => d.querySelectorAll('.new,.highlight').forEach(e => e.classList.remove('new', 'highlight')), 900);
+    }
+    function setOut(id, msg, ok = true) { const e = document.getElementById(id); e.textContent = msg; e.className = 'output-line ' + (ok ? 'ok' : 'err'); }
+    function resetList() { myList = ["apple", "banana", "orange", "pineapple"]; renderList(); }
+    function resetDict() { myDict = { name: "Alice", age: "25", city: "Lahore" }; renderDict(); }
+
+    /* ── List ops ── */
+    function doAppend() { const v = document.getElementById('inp-append').value.trim(); if (!v) { setOut('out-append', '⚠ enter a value', false); return; } myList.push(v); renderList(myList.length - 1); setOut('out-append', `→ length is now ${myList.length}`); document.getElementById('inp-append').value = ''; }
+    function doInsert() { const i = parseInt(document.getElementById('inp-insert-i').value), x = document.getElementById('inp-insert-x').value.trim(); if (isNaN(i) || !x) { setOut('out-insert', '⚠ enter index and value', false); return; } if (i < 0 || i > myList.length) { setOut('out-insert', '⚠ index out of range', false); return; } myList.splice(i, 0, x); renderList(i); setOut('out-insert', `→ "${x}" inserted at [${i}]`); document.getElementById('inp-insert-i').value = ''; document.getElementById('inp-insert-x').value = ''; }
+    function doRemove() { const v = document.getElementById('inp-remove').value.trim(); if (!v) { setOut('out-remove', '⚠ enter a value', false); return; } const idx = myList.indexOf(v); if (idx === -1) { setOut('out-remove', `⚠ ValueError: "${v}" not in list`, false); return; } myList.splice(idx, 1); renderList(); setOut('out-remove', `→ first "${v}" removed`); document.getElementById('inp-remove').value = ''; }
+    function doPop() { if (!myList.length) { setOut('out-pop', '⚠ IndexError: pop from empty list', false); return; } const raw = document.getElementById('inp-pop').value.trim(); let i = raw === '' ? myList.length - 1 : parseInt(raw); if (isNaN(i) || i < -myList.length || i >= myList.length) { setOut('out-pop', '⚠ IndexError: index out of range', false); return; } if (i < 0) i = myList.length + i; const val = myList.splice(i, 1)[0]; renderList(); setOut('out-pop', `→ popped "${val}" from [${i}]`); document.getElementById('inp-pop').value = ''; }
+    function doAccess() { const raw = document.getElementById('inp-access').value.trim(); let i = parseInt(raw); if (isNaN(i)) { setOut('out-access', '⚠ enter an integer index', false); return; } if (i < -myList.length || i >= myList.length) { setOut('out-access', '⚠ IndexError: index out of range', false); return; } if (i < 0) i = myList.length + i; renderList(-1, i); setOut('out-access', `→ my_list[${i}] = "${myList[i]}"`); }
+    function doUpdate() { const i = parseInt(document.getElementById('inp-upd-i').value), x = document.getElementById('inp-upd-x').value.trim(); if (isNaN(i) || !x) { setOut('out-update', '⚠ enter index and value', false); return; } if (i < -myList.length || i >= myList.length) { setOut('out-update', '⚠ IndexError: index out of range', false); return; } const ni = i < 0 ? myList.length + i : i; myList[ni] = x; renderList(-1, ni); setOut('out-update', `→ [${ni}] updated to "${x}"`); document.getElementById('inp-upd-i').value = ''; document.getElementById('inp-upd-x').value = ''; }
+    function doSort() { myList.sort((a, b) => isNaN(a) || isNaN(b) ? String(a).localeCompare(String(b)) : +a - +b); renderList(); setOut('out-sort', '→ list sorted in-place'); }
+    function doReverse() { myList.reverse(); renderList(); setOut('out-reverse', '→ list reversed in-place'); }
+    function doIndex() { const v = document.getElementById('inp-index').value.trim(); if (!v) { setOut('out-index', '⚠ enter a value', false); return; } const i = myList.indexOf(v); if (i === -1) { setOut('out-index', `⚠ ValueError: "${v}" not in list`, false); return; } renderList(-1, i); setOut('out-index', `→ index of "${v}" = ${i}`); document.getElementById('inp-index').value = ''; }
+    function doCount() { const v = document.getElementById('inp-count').value.trim(); if (!v) { setOut('out-count', '⚠ enter a value', false); return; } const c = myList.filter(x => x === v).length; setOut('out-count', `→ "${v}" appears ${c} time(s)`); document.getElementById('inp-count').value = ''; }
+    function doExtend() { const raw = document.getElementById('inp-extend').value.trim(); if (!raw) { setOut('out-extend', '⚠ enter comma-separated values', false); return; } const items = raw.split(',').map(s => s.trim()).filter(Boolean); const sl = myList.length; items.forEach(v => myList.push(v)); renderList(sl); setOut('out-extend', `→ added ${items.length} item(s), length now ${myList.length}`); document.getElementById('inp-extend').value = ''; }
+    function doClear(w) { if (w === 'list') { myList = []; renderList(); setOut('out-clear-list', '→ list cleared, length = 0'); } else { myDict = {}; renderDict(); setOut('out-clear-dict', '→ dict cleared, length = 0'); } }
+
+    /* ── Dict ops ── */
+    function doDictSet() { const k = document.getElementById('inp-dset-k').value.trim(), v = document.getElementById('inp-dset-v').value.trim(); if (!k || !v) { setOut('out-dset', '⚠ enter key and value', false); return; } const ex = k in myDict; myDict[k] = v; renderDict(k); setOut('out-dset', ex ? `→ updated "${k}" = "${v}"` : ` → added "${k}": "${v}"`); document.getElementById('inp-dset-k').value = ''; document.getElementById('inp-dset-v').value = ''; }
+    function doDictGet() { const k = document.getElementById('inp-dget').value.trim(); if (!k) { setOut('out-dget', '⚠ enter a key', false); return; } if (!(k in myDict)) { setOut('out-dget', `⚠ KeyError: "${k}"`, false); return; } renderDict('', k); setOut('out-dget', `→ d["${k}"] = "${myDict[k]}"`); document.getElementById('inp-dget').value = ''; }
+    function doDictGetDef() { const k = document.getElementById('inp-dget2-k').value.trim(), df = document.getElementById('inp-dget2-d').value.trim() || 'None'; if (!k) { setOut('out-dget2', '⚠ enter a key', false); return; } const val = (k in myDict) ? myDict[k] : df; if (k in myDict) renderDict('', k); setOut('out-dget2', `→ d.get("${k}") = "${val}"`); document.getElementById('inp-dget2-k').value = ''; document.getElementById('inp-dget2-d').value = ''; }
+    function doDictDel() { const k = document.getElementById('inp-ddel').value.trim(); if (!k) { setOut('out-ddel', '⚠ enter a key', false); return; } if (!(k in myDict)) { setOut('out-ddel', `⚠ KeyError: "${k}"`, false); return; } delete myDict[k]; renderDict(); setOut('out-ddel', `→ deleted "${k}"`); document.getElementById('inp-ddel').value = ''; }
+    function doDictPop() { const k = document.getElementById('inp-dpop').value.trim(); if (!k) { setOut('out-dpop', '⚠ enter a key', false); return; } if (!(k in myDict)) { setOut('out-dpop', `⚠ KeyError: "${k}"`, false); return; } const v = myDict[k]; delete myDict[k]; renderDict(); setOut('out-dpop', `→ popped "${k}", returned "${v}"`); document.getElementById('inp-dpop').value = ''; }
+    function doDictIn() { const k = document.getElementById('inp-din').value.trim(); if (!k) { setOut('out-din', '⚠ enter a key', false); return; } const f = k in myDict; if (f) renderDict('', k); setOut('out-din', `→ "${k}" in d = ${f}`); document.getElementById('inp-din').value = ''; }
+    function doDictKeys() { setOut('out-dkeys', `→ dict_keys([${Object.keys(myDict).map(k => `"${k}"`).join(', ')}])`); }
+    function doDictVals() { setOut('out-dvals', `→ dict_values([${Object.values(myDict).map(v => `"${v}"`).join(', ')}])`); }
+    function doDictItems() { setOut('out-ditems', `→ [${Object.entries(myDict).map(([k, v]) => `("${k}","${v}")`).join(', ')}]`); }
+    function doDictUpdate() { const raw = document.getElementById('inp-dupd').value.trim(); if (!raw) { setOut('out-dupd', '⚠ enter key:val pairs, comma-separated', false); return; } let n = 0; raw.split(',').forEach(p => { const [k, v] = p.split(':').map(s => s.trim()); if (k && v) { myDict[k] = v; n++; } }); if (!n) { setOut('out-dupd', '⚠ invalid format — use key:val', false); return; } renderDict(); setOut('out-dupd', `→ ${n} pair(s) merged into dict`); document.getElementById('inp-dupd').value = ''; }
+    function doDictSetDefault() { const k = document.getElementById('inp-dsd-k').value.trim(), v = document.getElementById('inp-dsd-v').value.trim() || 'None'; if (!k) { setOut('out-dsd', '⚠ enter a key', false); return; } if (k in myDict) { setOut('out-dsd', `→ "${k}" already exists, not changed`); renderDict('', k); } else { myDict[k] = v; renderDict(k); setOut('out-dsd', `→ "${k}" set to "${v}" (new key)`); } document.getElementById('inp-dsd-k').value = ''; document.getElementById('inp-dsd-v').value = ''; }
+
+    /* ══════════════════════════════════════
+       METHOD DETAIL MODAL
+    ══════════════════════════════════════ */
+    const DETAILS = {
+      append: { type: 'list', title: 'lst.append(x)', desc: 'Adds a single element x to the end of the list. The list length grows by 1. This is the most common way to build a list item-by-item.', syntax: `fruits = [<span class="str">"apple"</span>, <span class="str">"banana"</span>]\nfruits.append(<span class="str">"mango"</span>)\n<span class="cm"># → ["apple", "banana", "mango"]</span>`, notes: `<ul><li>Modifies the list <b>in-place</b> — returns <code>None</code>.</li><li>Time complexity: <b>O(1)</b> amortized.</li><li>To add multiple items at once, use <code>extend()</code>.</li></ul>` },
+      insert: { type: 'list', title: 'lst.insert(i, x)', desc: 'Inserts element x before the item at index i, shifting all subsequent elements one position right.', syntax: `lst = [<span class="str">"a"</span>,<span class="str">"b"</span>,<span class="str">"c"</span>]\nlst.insert(<span class="num">1</span>, <span class="str">"z"</span>)\n<span class="cm"># → ["a", "z", "b", "c"]</span>`, notes: `<ul><li>Index <code>0</code> inserts at the very beginning.</li><li>Index ≥ len(lst) appends to end — no error.</li><li>Time complexity: <b>O(n)</b> — items must shift.</li></ul>` },
+      remove: { type: 'list', title: 'lst.remove(x)', desc: 'Removes the first occurrence of value x. Raises ValueError if x is not present.', syntax: `lst = [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">2</span>]\nlst.remove(<span class="num">2</span>)\n<span class="cm"># → [1, 3, 2]</span>`, notes: `<ul><li>Only removes the <b>first match</b>.</li><li>Raises <code>ValueError</code> if element not found.</li><li>Use <code>pop(i)</code> to remove by index instead.</li></ul>` },
+      pop: { type: 'list', title: 'lst.pop(i)', desc: 'Removes and returns the item at position i. If no index is given, removes and returns the last element.', syntax: `lst = [<span class="str">"x"</span>,<span class="str">"y"</span>,<span class="str">"z"</span>]\nval = lst.pop()    <span class="cm"># → "z"</span>\nval = lst.pop(<span class="num">0</span>)  <span class="cm"># → "x"</span>`, notes: `<ul><li><b>Returns</b> the removed value.</li><li><code>pop()</code> with no arg is <b>O(1)</b>; <code>pop(0)</code> is <b>O(n)</b>.</li><li>Raises <code>IndexError</code> on empty list or bad index.</li></ul>` },
+      access: { type: 'list', title: 'lst[i] — Index Access', desc: 'Retrieves the element at index i. Python supports negative indices: -1 is the last, -2 is second-to-last, etc.', syntax: `lst = [<span class="str">"a"</span>,<span class="str">"b"</span>,<span class="str">"c"</span>]\nlst[<span class="num">0</span>]   <span class="cm"># → "a"</span>\nlst[<span class="num">-1</span>]  <span class="cm"># → "c"</span>`, notes: `<ul><li>Zero-based: first element is index 0.</li><li>Negative indices count from the end.</li><li>Raises <code>IndexError</code> if out of range.</li></ul>` },
+      update: { type: 'list', title: 'lst[i] = x — Assignment', desc: 'Replaces the element at index i with the new value x. List length stays the same.', syntax: `lst = [<span class="num">10</span>,<span class="num">20</span>,<span class="num">30</span>]\nlst[<span class="num">1</span>] = <span class="num">99</span>\n<span class="cm"># → [10, 99, 30]</span>`, notes: `<ul><li>Modifies in-place; negative indices work too.</li><li>Raises <code>IndexError</code> if out of bounds.</li></ul>` },
+      sort: { type: 'list', title: 'lst.sort()', desc: 'Sorts the list in ascending order in-place. Strings lexicographically, numbers numerically.', syntax: `nums = [<span class="num">3</span>,<span class="num">1</span>,<span class="num">4</span>,<span class="num">1</span>,<span class="num">5</span>]\nnums.sort()\n<span class="cm"># → [1, 1, 3, 4, 5]</span>\nnums.sort(reverse=<span class="kw">True</span>)\n<span class="cm"># → [5, 4, 3, 1, 1]</span>`, notes: `<ul><li>In-place — returns <code>None</code>. Use <code>sorted(lst)</code> for a copy.</li><li>Uses Timsort — O(n log n).</li><li>Mixing types raises <code>TypeError</code>.</li></ul>` },
+      reverse: { type: 'list', title: 'lst.reverse()', desc: 'Reverses the elements of the list in-place.', syntax: `lst = [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>]\nlst.reverse()\n<span class="cm"># → [3, 2, 1]</span>`, notes: `<ul><li>In-place — returns <code>None</code>.</li><li>Use <code>lst[::-1]</code> for a reversed copy.</li><li>O(n) time complexity.</li></ul>` },
+      index: { type: 'list', title: 'lst.index(x)', desc: 'Returns the index of the first occurrence of value x.', syntax: `lst = [<span class="str">"a"</span>,<span class="str">"b"</span>,<span class="str">"c"</span>,<span class="str">"b"</span>]\nlst.index(<span class="str">"b"</span>)  <span class="cm"># → 1</span>`, notes: `<ul><li>Returns only the first match index.</li><li>Raises <code>ValueError</code> if x not in list.</li><li>Optional: <code>lst.index(x, start, end)</code>.</li></ul>` },
+      count: { type: 'list', title: 'lst.count(x)', desc: 'Returns the number of times value x appears. Returns 0 if not found — never raises an error.', syntax: `lst = [<span class="num">1</span>,<span class="num">2</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">2</span>]\nlst.count(<span class="num">2</span>)  <span class="cm"># → 3</span>\nlst.count(<span class="num">9</span>)  <span class="cm"># → 0</span>`, notes: `<ul><li>Returns 0 if element not present — no error.</li><li>O(n) — scans the whole list.</li></ul>` },
+      extend: { type: 'list', title: 'lst.extend(iterable)', desc: 'Appends all elements from an iterable to the end of the list.', syntax: `lst = [<span class="num">1</span>,<span class="num">2</span>]\nlst.extend([<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>])\n<span class="cm"># → [1, 2, 3, 4, 5]</span>`, notes: `<ul><li>In-place — returns <code>None</code>.</li><li>Unlike <code>append([3,4])</code>, it unpacks the iterable.</li><li>Works with lists, tuples, sets, generators.</li></ul>` },
+      'list-clear': { type: 'list', title: 'lst.clear()', desc: 'Removes all elements, leaving an empty list.', syntax: `lst = [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>]\nlst.clear()\n<span class="cm"># → []</span>`, notes: `<ul><li>Equivalent to <code>del lst[:]</code>.</li><li>Same object — other references see it cleared.</li><li>Use <code>lst = []</code> to create a brand-new list.</li></ul>` },
+      dset: { type: 'dict', title: 'd[key] = value', desc: 'Assigns a value to a key. Creates the key if new; overwrites if it already exists.', syntax: `d = {}\nd[<span class="str">"name"</span>] = <span class="str">"Alice"</span>  <span class="cm"># new</span>\nd[<span class="str">"name"</span>] = <span class="str">"Bob"</span>    <span class="cm"># update</span>`, notes: `<ul><li>Keys must be hashable (str, int, tuple).</li><li>Overwrites old value silently.</li><li>Order preserved since Python 3.7.</li></ul>` },
+      dget: { type: 'dict', title: 'd[key] — Direct Access', desc: 'Returns the value for key. Raises KeyError if key does not exist.', syntax: `d = {<span class="str">"age"</span>: <span class="num">25</span>}\nd[<span class="str">"age"</span>]   <span class="cm"># → 25</span>\nd[<span class="str">"x"</span>]    <span class="cm"># → KeyError!</span>`, notes: `<ul><li>Fastest when you're sure the key exists.</li><li>Use <code>d.get()</code> for safe access.</li></ul>` },
+      dget2: { type: 'dict', title: 'd.get(key, default)', desc: 'Returns the value if key exists, otherwise returns default. Never raises KeyError.', syntax: `d = {<span class="str">"score"</span>: <span class="num">42</span>}\nd.get(<span class="str">"score"</span>)         <span class="cm"># → 42</span>\nd.get(<span class="str">"rank"</span>, <span class="num">0</span>)      <span class="cm"># → 0</span>`, notes: `<ul><li>Safe alternative to <code>d[key]</code>.</li><li>Default is <code>None</code> if not specified.</li><li>Does not modify the dictionary.</li></ul>` },
+      ddel: { type: 'dict', title: 'del d[key]', desc: 'Removes the key-value pair. Raises KeyError if key not found.', syntax: `d = {<span class="str">"a"</span>:<span class="num">1</span>,<span class="str">"b"</span>:<span class="num">2</span>}\n<span class="kw">del</span> d[<span class="str">"a"</span>]\n<span class="cm"># → {"b": 2}</span>`, notes: `<ul><li>Raises <code>KeyError</code> if key missing.</li><li>Unlike <code>pop()</code>, it does not return the value.</li></ul>` },
+      dpop: { type: 'dict', title: 'd.pop(key)', desc: 'Removes key and returns its value. Raises KeyError if key missing (unless default provided).', syntax: `d = {<span class="str">"x"</span>:<span class="num">10</span>}\nval = d.pop(<span class="str">"x"</span>)       <span class="cm"># → 10</span>\nval = d.pop(<span class="str">"x"</span>,<span class="num">0</span>)    <span class="cm"># → 0 (safe)</span>`, notes: `<ul><li>Returns the removed value.</li><li>Optional default avoids KeyError.</li></ul>` },
+      din: { type: 'dict', title: '"key" in d', desc: 'Returns True if key exists, False otherwise. Checks keys only, not values.', syntax: `d = {<span class="str">"name"</span>:<span class="str">"Alice"</span>}\n<span class="str">"name"</span> <span class="kw">in</span> d  <span class="cm"># → True</span>\n<span class="str">"age"</span>  <span class="kw">in</span> d  <span class="cm"># → False</span>`, notes: `<ul><li>O(1) average — hash-based.</li><li>To check values: <code>val in d.values()</code>.</li></ul>` },
+      dkeys: { type: 'dict', title: 'd.keys()', desc: 'Returns a dynamic view of all keys.', syntax: `d = {<span class="str">"a"</span>:<span class="num">1</span>,<span class="str">"b"</span>:<span class="num">2</span>}\nd.keys()  <span class="cm"># → dict_keys(["a","b"])</span>`, notes: `<ul><li>View object — reflects live changes to dict.</li><li>Supports set ops: <code>d.keys() & other.keys()</code>.</li></ul>` },
+      dvals: { type: 'dict', title: 'd.values()', desc: 'Returns a dynamic view of all values.', syntax: `d = {<span class="str">"a"</span>:<span class="num">1</span>,<span class="str">"b"</span>:<span class="num">2</span>}\nd.values()  <span class="cm"># → dict_values([1, 2])</span>`, notes: `<ul><li>View object — reflects live changes.</li><li>Checking membership is O(n), not O(1).</li></ul>` },
+      ditems: { type: 'dict', title: 'd.items()', desc: 'Returns a view of all (key, value) pairs. The standard way to iterate a dict.', syntax: `d = {<span class="str">"x"</span>:<span class="num">1</span>,<span class="str">"y"</span>:<span class="num">2</span>}\n<span class="kw">for</span> k,v <span class="kw">in</span> d.items():\n    print(k, v)`, notes: `<ul><li>Ideal for unpacking: <code>for k, v in d.items()</code>.</li><li><code>list(d.items())</code> → list of tuples.</li></ul>` },
+      dupd: { type: 'dict', title: 'd.update(other)', desc: 'Merges key-value pairs from another dict. Existing keys are overwritten; new keys added.', syntax: `d = {<span class="str">"a"</span>:<span class="num">1</span>}\nd.update({<span class="str">"b"</span>:<span class="num">2</span>,<span class="str">"a"</span>:<span class="num">99</span>})\n<span class="cm"># → {"a": 99, "b": 2}</span>`, notes: `<ul><li>In-place — returns <code>None</code>.</li><li>Python 3.9+: <code>d | other</code> creates a new merged dict.</li></ul>` },
+      dsd: { type: 'dict', title: 'd.setdefault(key, default)', desc: 'Returns value if key exists. If not, inserts key with default and returns it.', syntax: `d = {<span class="str">"a"</span>:<span class="num">1</span>}\nd.setdefault(<span class="str">"a"</span>,<span class="num">99</span>)  <span class="cm"># → 1</span>\nd.setdefault(<span class="str">"b"</span>,<span class="num">42</span>)  <span class="cm"># → 42 (new)</span>`, notes: `<ul><li>Key only set if it does not already exist.</li><li>Classic use: <code>d.setdefault(key, [])</code>.</li></ul>` },
+      'dict-clear': { type: 'dict', title: 'd.clear()', desc: 'Removes all key-value pairs, leaving an empty dict.', syntax: `d = {<span class="str">"a"</span>:<span class="num">1</span>}\nd.clear()\n<span class="cm"># → {}</span>`, notes: `<ul><li>In-place — all references see it cleared.</li><li>Returns <code>None</code>.</li></ul>` }
+    };
+
+    function showDetail(key) {
+      const info = DETAILS[key]; if (!info) return;
+      const tag = document.getElementById('modal-tag');
+      tag.textContent = info.type === 'list' ? 'List Method' : 'Dict Method';
+      tag.className = 'modal-tag ' + info.type;
+      document.getElementById('modal-title').textContent = info.title;
+      document.getElementById('modal-desc').textContent = info.desc;
+      document.getElementById('modal-syntax').innerHTML = info.syntax;
+      document.getElementById('modal-notes').innerHTML = info.notes;
+      document.getElementById('modal-overlay').classList.add('open');
+    }
+    function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+
+    /* ══════════════════════════════════════
+       OVERVIEW MODAL
+    ══════════════════════════════════════ */
+    const OVERVIEW = {
+      list: {
+        emoji: '📋', headline: 'Python List', mono: 'list  →  [ item, item, item, ... ]',
+        badge: 'list', badgeText: 'Built-in Sequence Type',
+        def: 'A list is an ordered, mutable collection of items in Python. It can hold any combination of data types — numbers, strings, booleans, other lists, or even objects — all in a single variable. Items sit in a defined sequence and are accessed by their zero-based integer index. Because lists are mutable, you can freely add, remove, or change elements after the list is created, making them one of the most versatile and frequently used data structures in Python.',
+        traits: [
+          { b: 'Ordered', n: 'insertion order is always preserved' },
+          { b: 'Mutable', n: 'items can be added, removed, or changed' },
+          { b: 'Zero-indexed', n: 'first element is at index [0]' },
+          { b: 'Allows duplicates', n: 'same value can appear multiple times' },
+          { b: 'Heterogeneous', n: 'mixed data types in one list' },
+          { b: 'Dynamic size', n: 'grows and shrinks at runtime' },
+        ],
+        code: `<span class="cm"># Creating lists</span>
+fruits  = [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"cherry"</span>]
+numbers = [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>]
+mixed   = [<span class="num">1</span>, <span class="str">"hello"</span>, <span class="num">3.14</span>, <span class="kw">True</span>]
+
+<span class="cm"># Access by index</span>
+fruits[<span class="num">0</span>]          <span class="cm"># → "apple"</span>
+fruits[<span class="num">-1</span>]         <span class="cm"># → "cherry"  (last item)</span>
+
+<span class="cm"># Mutate</span>
+fruits[<span class="num">1</span>] = <span class="str">"mango"</span>  <span class="cm"># replace banana</span>
+fruits.append(<span class="str">"kiwi"</span>) <span class="cm"># add to end</span>
+
+<span class="cm"># Iterate</span>
+<span class="kw">for</span> item <span class="kw">in</span> fruits:
+    <span class="fn">print</span>(item)`,
+        rw: `<ul>
+  <li><b>Shopping cart</b> — an ordered list of products a user has added; items can be appended, removed, or reordered before checkout.</li>
+  <li><b>Task queue / to-do list</b> — new tasks are appended; completed ones are popped; the list shrinks dynamically.</li>
+  <li><b>Leaderboard scores</b> — a list of integers that is sorted and sliced to show the top-N players.</li>
+  <li><b>Sensor readings / time series</b> — sensor values are appended over time and later iterated or sliced for analysis.</li>
+  <li><b>Playlist</b> — a music player stores song filenames in a list; shuffle calls <code>random.shuffle()</code> in-place.</li>
+</ul>`,
+        vsLbl: 'List vs Other Sequences',
+        vs: [
+          { t: 'List  vs  Tuple', b: 'Tuples are immutable — use for fixed data like coordinates or RGB values. Lists for data that changes.' },
+          { t: 'List  vs  Set', b: 'Sets are unordered and store only unique items. Use a list when order or duplicates matter.' },
+          { t: 'List  vs  Dict', b: 'Dicts map keys to values. Use a list for simple sequential values that don\'t need named labels.' },
+          { t: 'List  vs  deque', b: 'collections.deque is faster for prepend/pop-left. Use it when you need an efficient queue.' },
+        ]
+      },
+      dict: {
+        emoji: '📖', headline: 'Python Dictionary', mono: 'dict  →  { key: value, key: value, ... }',
+        badge: 'dict', badgeText: 'Built-in Mapping Type',
+        def: 'A dictionary is an ordered*, mutable collection of key–value pairs. Each unique key maps to exactly one value. Keys must be hashable (strings, numbers, or tuples); values can be any object. Dictionaries are optimised for lightning-fast lookup by key — average O(1) — making them the go-to structure whenever you need to associate labels with data, count occurrences, cache results, or represent structured records. (* Insertion order guaranteed since Python 3.7.)',
+        traits: [
+          { b: 'Key → Value pairs', n: 'named access instead of positional' },
+          { b: 'Unique keys', n: 'duplicate keys silently overwrite' },
+          { b: 'Ordered', n: 'insertion order preserved (Python 3.7+)' },
+          { b: 'Mutable', n: 'add, update, and delete entries freely' },
+          { b: 'O(1) lookup', n: 'hash-based — extremely fast key access' },
+          { b: 'Any value type', n: 'values can be lists, dicts, objects, etc.' },
+        ],
+        code: `<span class="cm"># Creating a dictionary</span>
+person = {
+    <span class="str">"name"</span>: <span class="str">"Alice"</span>,
+    <span class="str">"age"</span> : <span class="num">28</span>,
+    <span class="str">"city"</span>: <span class="str">"Lahore"</span>
 }
 
-function renderList(newIdx=-1, hiIdx=-1) {
-  const d = document.getElementById('list-display');
-  d.innerHTML = myList.map((v,i)=>{
-    let cls='item';
-    if(i===newIdx) cls+=' new';
-    if(i===hiIdx) cls+=' highlight';
-    return `<div class="${cls}"><span class="item-val">${v}</span><span class="item-idx">[${i}]</span></div>`;
-  }).join('');
-  document.getElementById('len-display').textContent=`len(my_list) → ${myList.length}`;
-  if(newIdx>=0||hiIdx>=0) setTimeout(()=>d.querySelectorAll('.new,.highlight').forEach(el=>el.classList.remove('new','highlight')),900);
-}
+<span class="cm"># Access</span>
+person[<span class="str">"name"</span>]           <span class="cm"># → "Alice"</span>
+person.get(<span class="str">"score"</span>, <span class="num">0</span>)   <span class="cm"># → 0  (safe)</span>
 
-function renderDict(newKey='', hiKey='') {
-  const d = document.getElementById('dict-display');
-  d.innerHTML = Object.entries(myDict).map(([k,v])=>{
-    let cls='dict-entry';
-    if(k===newKey) cls+=' new';
-    if(k===hiKey) cls+=' highlight';
-    return `<div class="${cls}"><span class="dk">${k}</span><span class="dv">${v}</span></div>`;
-  }).join('');
-  document.getElementById('dict-len-display').textContent=`len(my_dict) → ${Object.keys(myDict).length}`;
-  if(newKey||hiKey) setTimeout(()=>d.querySelectorAll('.new,.highlight').forEach(el=>el.classList.remove('new','highlight')),900);
-}
+<span class="cm"># Add / update</span>
+person[<span class="str">"email"</span>] = <span class="str">"alice@mail.com"</span>
 
-function setOut(id,msg,ok=true){const el=document.getElementById(id);el.textContent=msg;el.className='output-line '+(ok?'ok':'err');}
-function resetList(){myList=["apple","banana","orange","pineapple"];renderList();}
-function resetDict(){myDict={name:"Alice",age:"25",city:"Lahore"};renderDict();}
+<span class="cm"># Iterate over pairs</span>
+<span class="kw">for</span> key, val <span class="kw">in</span> person.items():
+    <span class="fn">print</span>(key, <span class="str">"→"</span>, val)`,
+        rw: `<ul>
+  <li><b>User profile</b> — store name, age, and email as named fields; retrieve any field instantly by key without scanning a list.</li>
+  <li><b>Word frequency counter</b> — <code>{"the": 52, "python": 14}</code> built with one loop; each word is a key, its count the value.</li>
+  <li><b>App configuration</b> — settings loaded into a dict; any part of the code accesses them by name in O(1).</li>
+  <li><b>API / JSON response</b> — every JSON object from a web API becomes a Python dict automatically via <code>json.loads()</code>.</li>
+  <li><b>Memoization cache</b> — store expensive computed results keyed by input; on repeat calls return the cached value instantly.</li>
+</ul>`,
+        vsLbl: 'Dict vs Related Structures',
+        vs: [
+          { t: 'Dict  vs  List', b: 'Use a dict for named-key access. Use a list for positional, sequential data without labels.' },
+          { t: 'Dict  vs  Set', b: 'A set is like a dict with keys only and no values. Use it for membership tests and deduplication.' },
+          { t: 'Dict  vs  NamedTuple', b: 'NamedTuple is immutable and memory-efficient for fixed records. Dict is better when fields change.' },
+          { t: 'Dict  vs  defaultdict', b: 'collections.defaultdict auto-creates missing keys. Saves if-checks; ideal for grouping or counting.' },
+        ]
+      }
+    };
 
-function doAppend(){const v=document.getElementById('inp-append').value.trim();if(!v){setOut('out-append','⚠ enter a value',false);return;}myList.push(v);renderList(myList.length-1);setOut('out-append',`→ my_list is now length ${myList.length}`);document.getElementById('inp-append').value='';}
-function doInsert(){const i=parseInt(document.getElementById('inp-insert-i').value),x=document.getElementById('inp-insert-x').value.trim();if(isNaN(i)||!x){setOut('out-insert','⚠ enter index and value',false);return;}if(i<0||i>myList.length){setOut('out-insert','⚠ index out of range',false);return;}myList.splice(i,0,x);renderList(i);setOut('out-insert',`→ "${x}" inserted at [${i}]`);document.getElementById('inp-insert-i').value='';document.getElementById('inp-insert-x').value='';}
-function doRemove(){const v=document.getElementById('inp-remove').value.trim();if(!v){setOut('out-remove','⚠ enter a value',false);return;}const idx=myList.indexOf(v);if(idx===-1){setOut('out-remove',`⚠ ValueError: "${v}" not in list`,false);return;}myList.splice(idx,1);renderList();setOut('out-remove',`→ first "${v}" removed`);document.getElementById('inp-remove').value='';}
-function doPop(){if(!myList.length){setOut('out-pop','⚠ IndexError: pop from empty list',false);return;}const raw=document.getElementById('inp-pop').value.trim();let i=raw===''?myList.length-1:parseInt(raw);if(isNaN(i)||i<-myList.length||i>=myList.length){setOut('out-pop','⚠ IndexError: index out of range',false);return;}if(i<0)i=myList.length+i;const val=myList.splice(i,1)[0];renderList();setOut('out-pop',`→ popped "${val}" from [${i}]`);document.getElementById('inp-pop').value='';}
-function doAccess(){const raw=document.getElementById('inp-access').value.trim();let i=parseInt(raw);if(isNaN(i)){setOut('out-access','⚠ enter an integer index',false);return;}if(i<-myList.length||i>=myList.length){setOut('out-access','⚠ IndexError: index out of range',false);return;}if(i<0)i=myList.length+i;renderList(-1,i);setOut('out-access',`→ my_list[${i}] = "${myList[i]}"`);}
-function doUpdate(){const i=parseInt(document.getElementById('inp-upd-i').value),x=document.getElementById('inp-upd-x').value.trim();if(isNaN(i)||!x){setOut('out-update','⚠ enter index and value',false);return;}if(i<-myList.length||i>=myList.length){setOut('out-update','⚠ IndexError: index out of range',false);return;}const ni=i<0?myList.length+i:i;myList[ni]=x;renderList(-1,ni);setOut('out-update',`→ [${ni}] updated to "${x}"`);document.getElementById('inp-upd-i').value='';document.getElementById('inp-upd-x').value='';}
-function doSort(){myList.sort((a,b)=>isNaN(a)||isNaN(b)?String(a).localeCompare(String(b)):+a-+b);renderList();setOut('out-sort','→ list sorted in-place');}
-function doReverse(){myList.reverse();renderList();setOut('out-reverse','→ list reversed in-place');}
-function doIndex(){const v=document.getElementById('inp-index').value.trim();if(!v){setOut('out-index','⚠ enter a value',false);return;}const i=myList.indexOf(v);if(i===-1){setOut('out-index',`⚠ ValueError: "${v}" not in list`,false);return;}renderList(-1,i);setOut('out-index',`→ index of "${v}" = ${i}`);document.getElementById('inp-index').value='';}
-function doCount(){const v=document.getElementById('inp-count').value.trim();if(!v){setOut('out-count','⚠ enter a value',false);return;}const c=myList.filter(x=>x===v).length;setOut('out-count',`→ "${v}" appears ${c} time(s)`);document.getElementById('inp-count').value='';}
-function doExtend(){const raw=document.getElementById('inp-extend').value.trim();if(!raw){setOut('out-extend','⚠ enter comma-separated values',false);return;}const items=raw.split(',').map(s=>s.trim()).filter(Boolean);const startLen=myList.length;items.forEach(v=>myList.push(v));renderList(startLen);setOut('out-extend',`→ added ${items.length} item(s), length now ${myList.length}`);document.getElementById('inp-extend').value='';}
-function doClear(which){if(which==='list'){myList=[];renderList();setOut('out-clear-list','→ list cleared, length = 0');}else{myDict={};renderDict();setOut('out-clear-dict','→ dict cleared, length = 0');}}
+    function showOverview(type) {
+      const d = OVERVIEW[type];
+      document.getElementById('ov-emoji').textContent = d.emoji;
+      document.getElementById('ov-headline').textContent = d.headline;
+      document.getElementById('ov-mono').textContent = d.mono;
+      const badge = document.getElementById('ov-badge');
+      badge.textContent = d.badgeText; badge.className = 'ov-badge ' + d.badge;
+      document.getElementById('ov-def').textContent = d.def;
+      document.getElementById('ov-traits').innerHTML = d.traits.map(t => `<div class="ov-trait"><b>${t.b}</b> — ${t.n}</div>`).join('');
+      document.getElementById('ov-code').innerHTML = d.code;
+      document.getElementById('ov-rw').innerHTML = d.rw;
+      document.getElementById('ov-vs-lbl').textContent = d.vsLbl;
+      document.getElementById('ov-vs').innerHTML = d.vs.map(v => `<div class="ov-vs-card"><div class="ov-vs-title">${v.t}</div><div class="ov-vs-body">${v.b}</div></div>`).join('');
+      document.getElementById('ov-overlay').classList.add('open');
+    }
+    function closeOv() { document.getElementById('ov-overlay').classList.remove('open'); }
 
-function doDictSet(){const k=document.getElementById('inp-dset-k').value.trim(),v=document.getElementById('inp-dset-v').value.trim();if(!k||!v){setOut('out-dset','⚠ enter key and value',false);return;}const existed=k in myDict;myDict[k]=v;renderDict(k);setOut('out-dset',existed?`→ updated "${k}" = "${v}"`:` → added "${k}": "${v}"`);document.getElementById('inp-dset-k').value='';document.getElementById('inp-dset-v').value='';}
-function doDictGet(){const k=document.getElementById('inp-dget').value.trim();if(!k){setOut('out-dget','⚠ enter a key',false);return;}if(!(k in myDict)){setOut('out-dget',`⚠ KeyError: "${k}"`,false);return;}renderDict('',k);setOut('out-dget',`→ d["${k}"] = "${myDict[k]}"`);document.getElementById('inp-dget').value='';}
-function doDictGetDef(){const k=document.getElementById('inp-dget2-k').value.trim(),df=document.getElementById('inp-dget2-d').value.trim()||'None';if(!k){setOut('out-dget2','⚠ enter a key',false);return;}const val=(k in myDict)?myDict[k]:df;if(k in myDict)renderDict('',k);setOut('out-dget2',`→ d.get("${k}") = "${val}"`);document.getElementById('inp-dget2-k').value='';document.getElementById('inp-dget2-d').value='';}
-function doDictDel(){const k=document.getElementById('inp-ddel').value.trim();if(!k){setOut('out-ddel','⚠ enter a key',false);return;}if(!(k in myDict)){setOut('out-ddel',`⚠ KeyError: "${k}"`,false);return;}delete myDict[k];renderDict();setOut('out-ddel',`→ deleted "${k}"`);document.getElementById('inp-ddel').value='';}
-function doDictPop(){const k=document.getElementById('inp-dpop').value.trim();if(!k){setOut('out-dpop','⚠ enter a key',false);return;}if(!(k in myDict)){setOut('out-dpop',`⚠ KeyError: "${k}"`,false);return;}const v=myDict[k];delete myDict[k];renderDict();setOut('out-dpop',`→ popped "${k}", returned "${v}"`);document.getElementById('inp-dpop').value='';}
-function doDictIn(){const k=document.getElementById('inp-din').value.trim();if(!k){setOut('out-din','⚠ enter a key',false);return;}const found=k in myDict;if(found)renderDict('',k);setOut('out-din',`→ "${k}" in d = ${found}`);document.getElementById('inp-din').value='';}
-function doDictKeys(){setOut('out-dkeys',`→ dict_keys([${Object.keys(myDict).map(k=>`"${k}"`).join(', ')}])`);}
-function doDictVals(){setOut('out-dvals',`→ dict_values([${Object.values(myDict).map(v=>`"${v}"`).join(', ')}])`);}
-function doDictItems(){setOut('out-ditems',`→ [${Object.entries(myDict).map(([k,v])=>`("${k}","${v}")`).join(', ')}]`);}
-function doDictUpdate(){const raw=document.getElementById('inp-dupd').value.trim();if(!raw){setOut('out-dupd','⚠ enter key:val pairs, comma-separated',false);return;}let added=0;raw.split(',').forEach(pair=>{const[k,v]=pair.split(':').map(s=>s.trim());if(k&&v){myDict[k]=v;added++;}});if(!added){setOut('out-dupd','⚠ invalid format — use key:val',false);return;}renderDict();setOut('out-dupd',`→ ${added} pair(s) merged into dict`);document.getElementById('inp-dupd').value='';}
-function doDictSetDefault(){const k=document.getElementById('inp-dsd-k').value.trim(),v=document.getElementById('inp-dsd-v').value.trim()||'None';if(!k){setOut('out-dsd','⚠ enter a key',false);return;}if(k in myDict){setOut('out-dsd',`→ "${k}" already exists, not changed`);renderDict('',k);}else{myDict[k]=v;renderDict(k);setOut('out-dsd',`→ "${k}" set to "${v}" (new key)`);}document.getElementById('inp-dsd-k').value='';document.getElementById('inp-dsd-v').value='';}
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeOv(); } });
 
-renderList();
-renderDict();
-</script>
+    renderList();
+    renderDict();
+  </script>
 </body>
+
 </html>
